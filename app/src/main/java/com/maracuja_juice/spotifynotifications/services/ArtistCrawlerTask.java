@@ -15,6 +15,8 @@ import kaaes.spotify.webapi.android.SpotifyError;
 import kaaes.spotify.webapi.android.SpotifyService;
 import kaaes.spotify.webapi.android.models.Artist;
 import kaaes.spotify.webapi.android.models.ArtistsCursorPager;
+import kaaes.spotify.webapi.android.models.Pager;
+import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 public class ArtistCrawlerTask extends AsyncTask<Void, Void, List<Artist>> {
@@ -33,46 +35,35 @@ public class ArtistCrawlerTask extends AsyncTask<Void, Void, List<Artist>> {
         this.listener = listener;
     }
 
-    private void follwedArtistsRequest(Map<String, Object> options, final SpotifyCallback callback) {
-        spotify.getFollowedArtists(options, new SpotifyCallback<ArtistsCursorPager>() {
-            @Override
-            public void success(ArtistsCursorPager artistsCursorPager, Response response) {
-                callback.success(artistsCursorPager, response);
-            }
+    private ArtistsCursorPager followedArtistsRequest(Map<String, Object> options) {
+        ArtistsCursorPager pager = null;
 
-            @Override
-            public void failure(SpotifyError error) {
-                callback.failure(error);
-            }
-        });
+        try {
+            pager = spotify.getFollowedArtists(options);
+        } catch (RetrofitError error) {
+            SpotifyError spotifyError = SpotifyError.fromRetrofitError(error);
+            Log.e(LOG_TAG, "BIG FAILURE! " + spotifyError.getErrorDetails());
+        }
+
+        return pager;
     }
 
     private List<Artist> getFollowedArtists() {
-        final int maximumArtists = 50;
-        final ArrayList<Artist> artists = new ArrayList<>();
-        final Map<String, Object> options = new HashMap<>();
-
-        SpotifyCallback callback = new SpotifyCallback() {
-            @Override
-            public void failure(SpotifyError spotifyError) {
-                // TODO: Better handle this.
-                Log.e(LOG_TAG, "BIG FAILURE! " + spotifyError.getErrorDetails());
-            }
-
-            @Override
-            public void success(Object o, Response response) {
-                ArtistsCursorPager pager = (ArtistsCursorPager) o;
-                artists.addAll(pager.artists.items);
-
-                if(pager.artists.cursors.after != null) {
-                    options.put("after", pager.artists.cursors.after);
-                    follwedArtistsRequest(options, this);
-                }
-            }
-        };
+        int maximumArtists = 50;
+        ArrayList<Artist> artists = new ArrayList<>();
+        Map<String, Object> options = new HashMap<>();
 
         options.put(SpotifyService.LIMIT, maximumArtists);
-        follwedArtistsRequest(options, callback);
+
+        ArtistsCursorPager pager = followedArtistsRequest(options);
+        artists.addAll(pager.artists.items);
+
+        while(pager.artists.cursors.after != null) {
+            options.put("after", pager.artists.cursors.after);
+            pager = followedArtistsRequest(options);
+            artists.addAll(pager.artists.items);
+        }
+
         return artists;
     }
 
