@@ -1,4 +1,4 @@
-package com.maracuja_juice.spotifynotifications;
+package com.maracuja_juice.spotifynotifications.com.maracuja_juice.spotifynotifications.activities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -44,19 +44,30 @@ public class LoginActivity extends AppCompatActivity {
                 case TOKEN:
                     // Handle successful response
                     Log.d(LOG_TAG, "Successful. " + response.getAccessToken());
+                    returnToMainActivity(response);
                     break;
 
                 // Auth flow returned an error
                 case ERROR:
                     Log.e(LOG_TAG, "ERROR! " + response.getError());
                     // Handle error response
+                    // TODO POPUP or something.
                     break;
 
                 // Most likely auth flow was cancelled
                 default:
                     // Handle other cases
                     Log.d(LOG_TAG, "No Idea what happened lol. " + response.getType() + " " + response.getError());
+                    //TODO POPUP or something.
             }
         }
+    }
+
+    private void returnToMainActivity(AuthenticationResponse response) {
+        Intent mainActivityIntent = new Intent(LoginActivity.this, MainActivity.class);
+        mainActivityIntent.putExtra("token", response.getAccessToken());
+        mainActivityIntent.putExtra("expiresIn", response.getExpiresIn());
+        startActivity(mainActivityIntent);
+        finish();
     }
 }
