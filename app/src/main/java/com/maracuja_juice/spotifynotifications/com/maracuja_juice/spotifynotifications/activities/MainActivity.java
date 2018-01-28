@@ -3,16 +3,19 @@ package com.maracuja_juice.spotifynotifications.com.maracuja_juice.spotifynotifi
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.maracuja_juice.spotifynotifications.R;
-import com.maracuja_juice.spotifynotifications.services.SpotifyCrawler;
+import com.maracuja_juice.spotifynotifications.services.ArtistCrawlerTask;
+import com.maracuja_juice.spotifynotifications.services.OnTaskCompleted;
 
 import java.util.List;
 
 import kaaes.spotify.webapi.android.models.Artist;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
 
+    private static final String LOG_TAG = MainActivity.class.getName();
     private boolean isLoggedIn = false;
 
     @Override
@@ -26,8 +29,8 @@ public class MainActivity extends AppCompatActivity {
             int expiresIn = receiveBundle.getInt("expiresIn");
             isLoggedIn = true;
 
-            SpotifyCrawler crawler = new SpotifyCrawler(token, expiresIn);
-            List<Artist> artists = crawler.getArtists();
+            //TODO: SpotifyCrawler that calls AlbumCrawler and ArtistCrawler. Here I will call SpotifyCrawler
+            new ArtistCrawlerTask(token, this).execute();
         }
 
         if(!isLoggedIn) {
@@ -35,5 +38,11 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
+    }
+
+    @Override
+    public void onTaskCompleted(Object result) {
+        List<Artist> artists = (List<Artist>) result;
+        Log.d(LOG_TAG, artists.toString());
     }
 }

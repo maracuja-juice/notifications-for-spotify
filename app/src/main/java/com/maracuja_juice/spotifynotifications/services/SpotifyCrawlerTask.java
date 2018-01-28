@@ -1,5 +1,6 @@
 package com.maracuja_juice.spotifynotifications.services;
 
+import android.os.AsyncTask;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -19,24 +20,20 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-/**
- * Created by Marimba on 28.01.2018.
- */
+public class SpotifyCrawlerTask extends AsyncTask {
 
-public class SpotifyCrawler {
-
-    private static final String LOG_TAG = SpotifyCrawler.class.getName();
+    private static final String LOG_TAG = SpotifyCrawlerTask.class.getName();
 
     private SpotifyService spotify;
 
-    public SpotifyCrawler(String token, int expiresIn) {
+    public SpotifyCrawlerTask(String token, int expiresIn) {
         SpotifyApi api = new SpotifyApi();
         api.setAccessToken(token);
 
         spotify = api.getService();
     }
 
-    public List<Artist> getArtists() {
+    public List<Artist> getFollowedArtists() {
         final int maximumArtists = 50;
         final ArrayList<Artist> artists = new ArrayList<>();
         final Map<String, Object> options = new HashMap<>();
@@ -55,17 +52,35 @@ public class SpotifyCrawler {
 
                 if(pager.artists.cursors.after != null) {
                     options.put("after", pager.artists.cursors.after);
-                    follwedArtistRequest(options, this);
+                    follwedArtistsRequest(options, this);
                 }
             }
         };
 
         options.put(SpotifyService.LIMIT, maximumArtists);
-        follwedArtistRequest(options, callback);
+        follwedArtistsRequest(options, callback);
         return artists;
     }
 
-    private void follwedArtistRequest(Map<String, Object> options, final SpotifyCallback callback) {
+
+    public List<Album> getAlbumsOfAllArtists(List<Artist> artists) {
+        ArrayList<Album> albums = new ArrayList<>();
+        for (int i = 0; i < artists.size(); i++) {
+            List<Album> artistsAlbums = getAlbumsOfSingleArtist(artists.get(i));
+            albums.addAll(artistsAlbums);
+        }
+        return albums;
+    }
+
+    public List<Album> getAlbumsOfSingleArtist(Artist artist) {
+        return new ArrayList<>();
+    }
+
+    private void albumOfArtistRequest(Map<String, Object> options, final SpotifyCallback callback) {
+
+    }
+
+    private void follwedArtistsRequest(Map<String, Object> options, final SpotifyCallback callback) {
         spotify.getFollowedArtists(options, new SpotifyCallback<ArtistsCursorPager>() {
             @Override
             public void success(ArtistsCursorPager artistsCursorPager, Response response) {
@@ -79,8 +94,10 @@ public class SpotifyCrawler {
         });
     }
 
-//
-//    public List<Album> getAlbumsOfArtist() {
-//
-//    }
+    @Override
+    protected Object doInBackground(Object[] objects) {
+
+        return null;
+    }
+
 }
