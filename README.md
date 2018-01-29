@@ -7,7 +7,7 @@
 
 ## The Solution
 
-This app.
+This app. (not yet though)
 
 The goal is to make a good looking Android Material Design app with at least the following features:
 
