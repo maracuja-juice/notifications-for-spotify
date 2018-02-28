@@ -33,12 +33,11 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
 
             //TODO: SpotifyCrawler that calls AlbumCrawler and ArtistCrawler. Here I will call SpotifyCrawler
             SpotifyApiComponent component = DaggerSpotifyApiComponent.create();
-            ArtistCrawlerTask task = component.artistCrawlerTask();
+            ArtistCrawlerTask task = new ArtistCrawlerTask(token, this);
             /* TODO: setup a factory or something like described here:
             https://stackoverflow.com/questions/16040125/using-dagger-for-dependency-injection-on-constructors
             OR try out different framework where it is easier to put additional properties into constructor
              */
-            task.setupBeforeExecute(token, this);
             task.execute();
         }
 

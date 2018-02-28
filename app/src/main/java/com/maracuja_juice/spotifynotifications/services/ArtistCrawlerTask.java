@@ -3,6 +3,10 @@ package com.maracuja_juice.spotifynotifications.services;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.maracuja_juice.spotifynotifications.di.DaggerSpotifyApiComponent;
+import com.maracuja_juice.spotifynotifications.di.SpotifyApiComponent;
+import com.maracuja_juice.spotifynotifications.di.SpotifyApiModule;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,19 +25,17 @@ public class ArtistCrawlerTask extends AsyncTask<Void, Void, List<Artist>> {
 
     private static final String LOG_TAG = SpotifyCrawlerTask.class.getName();
     private SpotifyService spotify;
-    private SpotifyApi api;
+    @Inject SpotifyApi api;
     private OnTaskCompleted listener;
 
-    @Inject
-    public ArtistCrawlerTask(SpotifyApi api) {
-        this.api = api;
-    }
+    public ArtistCrawlerTask(String token, OnTaskCompleted listener) {
+        DaggerSpotifyApiComponent.create().inject(this);
 
-    public void setupBeforeExecute(String token, OnTaskCompleted listener) {
         api.setAccessToken(token);
         spotify = api.getService();
         this.listener = listener;
     }
+
 
     private ArtistsCursorPager followedArtistsRequest(Map<String, Object> options) {
         ArtistsCursorPager pager = null;

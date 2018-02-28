@@ -11,5 +11,4 @@ import dagger.Component;
 @Component(modules = SpotifyApiModule.class)
 public interface SpotifyApiComponent {
     void inject(ArtistCrawlerTask artistCrawlerTask);
-    ArtistCrawlerTask artistCrawlerTask();
 }
