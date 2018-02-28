@@ -4,34 +4,34 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import kaaes.spotify.webapi.android.SpotifyApi;
-import kaaes.spotify.webapi.android.SpotifyCallback;
 import kaaes.spotify.webapi.android.SpotifyError;
 import kaaes.spotify.webapi.android.SpotifyService;
 import kaaes.spotify.webapi.android.models.Artist;
 import kaaes.spotify.webapi.android.models.ArtistsCursorPager;
-import kaaes.spotify.webapi.android.models.Pager;
 import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 public class ArtistCrawlerTask extends AsyncTask<Void, Void, List<Artist>> {
 
     private static final String LOG_TAG = SpotifyCrawlerTask.class.getName();
     private SpotifyService spotify;
-
+    private SpotifyApi api;
     private OnTaskCompleted listener;
 
-    public ArtistCrawlerTask(String token, OnTaskCompleted listener) {
-        SpotifyApi api = new SpotifyApi();
+    @Inject
+    public ArtistCrawlerTask(SpotifyApi api) {
+        this.api = api;
+    }
+
+    public void setupBeforeExecute(String token, OnTaskCompleted listener) {
         api.setAccessToken(token);
-
         spotify = api.getService();
-
         this.listener = listener;
     }
 

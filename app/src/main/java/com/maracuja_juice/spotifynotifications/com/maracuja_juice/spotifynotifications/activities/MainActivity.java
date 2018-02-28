@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.maracuja_juice.spotifynotifications.R;
+import com.maracuja_juice.spotifynotifications.di.DaggerSpotifyApiComponent;
+import com.maracuja_juice.spotifynotifications.di.SpotifyApiComponent;
 import com.maracuja_juice.spotifynotifications.services.ArtistCrawlerTask;
 import com.maracuja_juice.spotifynotifications.services.OnTaskCompleted;
 
@@ -30,7 +32,14 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
             isLoggedIn = true;
 
             //TODO: SpotifyCrawler that calls AlbumCrawler and ArtistCrawler. Here I will call SpotifyCrawler
-            new ArtistCrawlerTask(token, this).execute();
+            SpotifyApiComponent component = DaggerSpotifyApiComponent.create();
+            ArtistCrawlerTask task = component.artistCrawlerTask();
+            /* TODO: setup a factory or something like described here:
+            https://stackoverflow.com/questions/16040125/using-dagger-for-dependency-injection-on-constructors
+            OR try out different framework where it is easier to put additional properties into constructor
+             */
+            task.setupBeforeExecute(token, this);
+            task.execute();
         }
 
         if(!isLoggedIn) {
@@ -43,6 +52,8 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
     @Override
     public void onTaskCompleted(Object result) {
         List<Artist> artists = (List<Artist>) result;
-        Log.d(LOG_TAG, artists.toString());
+        for (int i = 0; i < artists.size(); i++) {
+            Log.d(LOG_TAG, artists.get(i).name);
+        }
     }
 }
