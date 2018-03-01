@@ -17,26 +17,34 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
 
     private static final String LOG_TAG = MainActivity.class.getName();
     private boolean isLoggedIn = false;
+    private String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Bundle receiveBundle = this.getIntent().getExtras();
-        if(receiveBundle != null) {
-            String token = receiveBundle.getString("token");
-            int expiresIn = receiveBundle.getInt("expiresIn");
-            isLoggedIn = true;
-
-            //TODO: SpotifyCrawler that calls AlbumCrawler and ArtistCrawler. Here I will call SpotifyCrawler
-            new SpotifyCrawlerTask(token, this).execute();
-        }
-
         if(!isLoggedIn) {
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(intent);
-            finish();
+            Intent intent = new Intent(this, LoginActivity.class);
+            int requestCode = 1;
+            startActivityForResult(intent, requestCode);
+        } else {
+            startSpotifyCrawlerTask();
+        }
+    }
+
+    private void startSpotifyCrawlerTask() {
+        new SpotifyCrawlerTask(token, this).execute();
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if(resultCode == RESULT_OK) {
+                isLoggedIn = true;
+                token = data.getStringExtra("token");
+                startSpotifyCrawlerTask();
+            }
         }
     }
 

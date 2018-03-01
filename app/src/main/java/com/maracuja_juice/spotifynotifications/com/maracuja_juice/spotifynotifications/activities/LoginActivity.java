@@ -65,10 +65,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void returnToMainActivity(AuthenticationResponse response) {
-        Intent mainActivityIntent = new Intent(LoginActivity.this, MainActivity.class);
+        Intent mainActivityIntent = new Intent();
         mainActivityIntent.putExtra("token", response.getAccessToken());
-        mainActivityIntent.putExtra("expiresIn", response.getExpiresIn());
-        startActivity(mainActivityIntent);
+        setResult(RESULT_OK, mainActivityIntent);
         finish();
     }
 }
