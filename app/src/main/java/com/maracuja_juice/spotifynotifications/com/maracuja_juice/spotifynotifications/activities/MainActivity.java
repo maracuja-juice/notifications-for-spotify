@@ -6,14 +6,12 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.maracuja_juice.spotifynotifications.R;
-import com.maracuja_juice.spotifynotifications.di.DaggerSpotifyApiComponent;
-import com.maracuja_juice.spotifynotifications.di.SpotifyApiComponent;
-import com.maracuja_juice.spotifynotifications.services.ArtistCrawlerTask;
 import com.maracuja_juice.spotifynotifications.services.OnTaskCompleted;
+import com.maracuja_juice.spotifynotifications.services.SpotifyCrawlerTask;
 
 import java.util.List;
 
-import kaaes.spotify.webapi.android.models.Artist;
+import kaaes.spotify.webapi.android.models.Album;
 
 public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
 
@@ -32,8 +30,7 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
             isLoggedIn = true;
 
             //TODO: SpotifyCrawler that calls AlbumCrawler and ArtistCrawler. Here I will call SpotifyCrawler
-            new ArtistCrawlerTask(token, this).execute();
-            // TODO: Make Unit Test for ArtistCrawlerTask with mockito
+            new SpotifyCrawlerTask(token, this).execute();
         }
 
         if(!isLoggedIn) {
@@ -45,9 +42,9 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
 
     @Override
     public void onTaskCompleted(Object result) {
-        List<Artist> artists = (List<Artist>) result;
-        for (int i = 0; i < artists.size(); i++) {
-            Log.d(LOG_TAG, artists.get(i).name);
+        List<Album> albums = (List<Album>) result;
+        for (int i = 0; i < albums.size(); i++) {
+            Log.d(LOG_TAG, albums.get(i).name);
         }
     }
 }

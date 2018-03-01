@@ -3,10 +3,14 @@ package com.maracuja_juice.spotifynotifications.services;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.maracuja_juice.spotifynotifications.di.DaggerSpotifyApiComponent;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyCallback;
@@ -20,48 +24,31 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class SpotifyCrawlerTask extends AsyncTask {
+public class SpotifyCrawlerTask extends AsyncTask<Void, Void, List<Album>> {
 
     private static final String LOG_TAG = SpotifyCrawlerTask.class.getName();
 
     private SpotifyService spotify;
+    @Inject SpotifyApi api;
+    private OnTaskCompleted listener;
 
-    public SpotifyCrawlerTask(String token, int expiresIn) {
-        SpotifyApi api = new SpotifyApi();
+    private ArtistCrawler artistCrawler;
+    private AlbumCrawler albumCrawler;
+
+    public SpotifyCrawlerTask(String token, OnTaskCompleted listener) {
+        DaggerSpotifyApiComponent.create().inject(this);
+
         api.setAccessToken(token);
-
         spotify = api.getService();
+        artistCrawler = new ArtistCrawler(spotify);
+        albumCrawler = new AlbumCrawler(spotify);
+
+        this.listener = listener;
     }
 
     public List<Artist> getFollowedArtists() {
-        final int maximumArtists = 50;
-        final ArrayList<Artist> artists = new ArrayList<>();
-        final Map<String, Object> options = new HashMap<>();
-
-        SpotifyCallback callback = new SpotifyCallback() {
-            @Override
-            public void failure(SpotifyError spotifyError) {
-                // TODO: Better handle this.
-                Log.e(LOG_TAG, "BIG FAILURE! " + spotifyError.getErrorDetails());
-            }
-
-            @Override
-            public void success(Object o, Response response) {
-                ArtistsCursorPager pager = (ArtistsCursorPager) o;
-                artists.addAll(pager.artists.items);
-
-                if(pager.artists.cursors.after != null) {
-                    options.put("after", pager.artists.cursors.after);
-                    follwedArtistsRequest(options, this);
-                }
-            }
-        };
-
-        options.put(SpotifyService.LIMIT, maximumArtists);
-        follwedArtistsRequest(options, callback);
-        return artists;
+        return artistCrawler.getFollowedArtists();
     }
-
 
     public List<Album> getAlbumsOfAllArtists(List<Artist> artists) {
         ArrayList<Album> albums = new ArrayList<>();
@@ -73,31 +60,19 @@ public class SpotifyCrawlerTask extends AsyncTask {
     }
 
     public List<Album> getAlbumsOfSingleArtist(Artist artist) {
-        return new ArrayList<>();
-    }
-
-    private void albumOfArtistRequest(Map<String, Object> options, final SpotifyCallback callback) {
-
-    }
-
-    private void follwedArtistsRequest(Map<String, Object> options, final SpotifyCallback callback) {
-        spotify.getFollowedArtists(options, new SpotifyCallback<ArtistsCursorPager>() {
-            @Override
-            public void success(ArtistsCursorPager artistsCursorPager, Response response) {
-                callback.success(artistsCursorPager, response);
-            }
-
-            @Override
-            public void failure(SpotifyError error) {
-                callback.failure(error);
-            }
-        });
+        return albumCrawler.getAlbumsOfArtist(artist);
     }
 
     @Override
-    protected Object doInBackground(Object[] objects) {
-
-        return null;
+    protected List<Album> doInBackground(Void... voids) {
+        List<Artist> artists = getFollowedArtists();
+        List<Album> albums = getAlbumsOfAllArtists(artists);
+        return albums;
     }
 
+    @Override
+    protected void onPostExecute(List<Album> s) {
+        super.onPostExecute(s);
+        listener.onTaskCompleted(s);
+    }
 }

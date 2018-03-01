@@ -1,41 +1,27 @@
 package com.maracuja_juice.spotifynotifications.services;
 
-import android.os.AsyncTask;
 import android.util.Log;
-
-import com.maracuja_juice.spotifynotifications.di.DaggerSpotifyApiComponent;
-import com.maracuja_juice.spotifynotifications.di.SpotifyApiComponent;
-import com.maracuja_juice.spotifynotifications.di.SpotifyApiModule;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
 
-import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyError;
 import kaaes.spotify.webapi.android.SpotifyService;
 import kaaes.spotify.webapi.android.models.Artist;
 import kaaes.spotify.webapi.android.models.ArtistsCursorPager;
 import retrofit.RetrofitError;
 
-public class ArtistCrawlerTask extends AsyncTask<Void, Void, List<Artist>> {
+public class ArtistCrawler {
 
     private static final String LOG_TAG = SpotifyCrawlerTask.class.getName();
     private SpotifyService spotify;
-    @Inject SpotifyApi api;
-    private OnTaskCompleted listener;
 
-    public ArtistCrawlerTask(String token, OnTaskCompleted listener) {
-        DaggerSpotifyApiComponent.create().inject(this);
-
-        api.setAccessToken(token);
-        spotify = api.getService();
-        this.listener = listener;
+    public ArtistCrawler(SpotifyService service) {
+        spotify = service;
     }
-
 
     private ArtistsCursorPager followedArtistsRequest(Map<String, Object> options) {
         ArtistsCursorPager pager = null;
@@ -50,7 +36,7 @@ public class ArtistCrawlerTask extends AsyncTask<Void, Void, List<Artist>> {
         return pager;
     }
 
-    private List<Artist> getFollowedArtists() {
+    public List<Artist> getFollowedArtists() {
         int maximumArtists = 50;
         ArrayList<Artist> artists = new ArrayList<>();
         Map<String, Object> options = new HashMap<>();
@@ -67,16 +53,5 @@ public class ArtistCrawlerTask extends AsyncTask<Void, Void, List<Artist>> {
         }
 
         return artists;
-    }
-
-    @Override
-    protected List<Artist> doInBackground(Void... voids) {
-        return getFollowedArtists();
-    }
-
-    @Override
-    protected void onPostExecute(List<Artist> s) {
-        super.onPostExecute(s);
-        listener.onTaskCompleted(s);
     }
 }
