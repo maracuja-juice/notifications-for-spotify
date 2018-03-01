@@ -43,21 +43,22 @@ public class AlbumCrawler {
 
     public List<Album> getAlbumsOfArtist(Artist artist) {
         int maximumArtists = 50;
-        ArrayList<Album> artists = new ArrayList<>();
+        ArrayList<Album> albums = new ArrayList<>();
 
         Map<String, Object> options = new HashMap<>();
         options.put(SpotifyService.LIMIT, maximumArtists);
+        options.put(SpotifyService.ALBUM_TYPE, "album,single");
 
-        // TODO: MARKET!!!
+        // TODO: Add MARKET?
         Pager<Album> albumPager = albumsOfArtistRequest(artist.id, options);
-        artists.addAll(albumPager.items);
+        albums.addAll(albumPager.items);
 
         while(albumPager.next != null) {
-            options.put(SpotifyService.OFFSET, albumPager.items.size());
+            options.put(SpotifyService.OFFSET, albums.size());
             albumPager = albumsOfArtistRequest(artist.id, options);
-            artists.addAll(albumPager.items);
+            albums.addAll(albumPager.items);
         }
 
-        return artists;
+        return albums;
     }
 }
