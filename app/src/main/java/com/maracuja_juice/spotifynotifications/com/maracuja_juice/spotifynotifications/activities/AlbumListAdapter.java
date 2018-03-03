@@ -11,10 +11,10 @@ import android.widget.TextView;
 import com.maracuja_juice.spotifynotifications.R;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import kaaes.spotify.webapi.android.models.Album;
+import kaaes.spotify.webapi.android.models.ArtistSimple;
 
 /**
  * Created by Maurice on 03.03.18.
@@ -48,44 +48,39 @@ public class AlbumListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        // Get view for row item
+        // TODO: sort by release date
+        // TODO: don't show full list. only first 100 items probably (out of memory error)
+        // TODO: add filter button
+
         View rowView = mInflater.inflate(R.layout.album_list, parent, false);
-
-        // Get title element
-        TextView titleTextView =
-                (TextView) rowView.findViewById(R.id.album_list_title);
-
-// Get subtitle element
-        TextView artistTextView =
-                (TextView) rowView.findViewById(R.id.album_list_artists);
-
-        TextView releaseDateTextView = (TextView) rowView.findViewById(R.id.album_list_release_date);
-
-// Get thumbnail element
-        ImageView thumbnailImageView =
-                (ImageView) rowView.findViewById(R.id.album_list_thumbnail);
-
+        ImageView thumbnailImageView = rowView.findViewById(R.id.album_list_thumbnail);
+        TextView titleTextView = rowView.findViewById(R.id.album_list_title);
+        TextView artistTextView = rowView.findViewById(R.id.album_list_artists);
+        TextView releaseDateTextView = rowView.findViewById(R.id.album_list_release_date);
 
         Album album = (Album) getItem(position);
-
-
-
-// 2
         titleTextView.setText(album.name);
 
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < album.artists.size(); i++) {
-            stringBuilder.append(album.artists.get(i).name);
-            if(album.artists.size() > i+1)
-              stringBuilder.append(", ");
-        }
-        artistTextView.setText(stringBuilder);
-
+        String artistText = getArtistText(album.artists);
+        artistTextView.setText(artistText);
 
         releaseDateTextView.setText(album.release_date);
-// 3
-        Picasso.with(mContext).load(album.images.get(0).url).placeholder(R.mipmap.ic_launcher).into(thumbnailImageView);
+
+        String imageUrl = album.images.get(0).url;
+        // TODO: Add better placeholder iamge
+        Picasso.with(mContext).load(imageUrl).placeholder(R.mipmap.ic_launcher).into(thumbnailImageView);
 
         return rowView;
+    }
+
+    private String getArtistText(List<ArtistSimple> artists) {
+        StringBuilder artistText = new StringBuilder();
+        for (int i = 0; i < artists.size(); i++) {
+            artistText.append(artists.get(i).name);
+            boolean thereAreMoreArtists = artists.size() > i+1;
+            if(thereAreMoreArtists)
+                artistText.append(", ");
+        }
+        return artistText.toString();
     }
 }

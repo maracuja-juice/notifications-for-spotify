@@ -42,7 +42,6 @@
             android:layout_marginRight="8dp"
             android:layout_marginTop="2dp"
             android:ellipsize="end"
-            android:maxLines="3"
             android:textSize="16sp"
             tools:text="Artists" />
 
@@ -51,6 +50,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/album_list_artists"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="2dp"
+            android:textSize="16sp"
             android:text="Release Date" />
 
     </RelativeLayout>

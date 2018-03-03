@@ -3,8 +3,6 @@ package com.maracuja_juice.spotifynotifications.com.maracuja_juice.spotifynotifi
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.maracuja_juice.spotifynotifications.R;
@@ -52,10 +50,8 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
 
     @Override
     public void onTaskCompleted(Object result) {
+        // TODO: add progress bar.
         List<Album> albums = (List<Album>) result;
-        for (int i = 0; i < albums.size(); i++) {
-            Log.d(LOG_TAG, albums.get(i).name);
-        }
         ListView listView = findViewById(R.id.albumListView);
         AlbumListAdapter adapter = new AlbumListAdapter(this, albums);
         listView.setAdapter(adapter);
