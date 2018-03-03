@@ -57,8 +57,7 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
             Log.d(LOG_TAG, albums.get(i).name);
         }
         ListView listView = findViewById(R.id.albumListView);
-        final ArrayAdapter adapter = new ArrayAdapter(this,
-                android.R.layout.simple_list_item_1, albums);
+        AlbumListAdapter adapter = new AlbumListAdapter(this, albums);
         listView.setAdapter(adapter);
 
     }

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Spotify Notifications</string>
+    <string name="thumbnail">Thumbnail</string>
 </resources>

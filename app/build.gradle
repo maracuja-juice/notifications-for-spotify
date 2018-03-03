@@ -4,7 +4,7 @@ android {
     compileSdkVersion 26
     defaultConfig {
         applicationId "com.maracuja_juice.spotifynotifications"
-        minSdkVersion 15
+        minSdkVersion 20
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
@@ -29,6 +29,7 @@ dependencies {
     // Libraries
     compile 'com.spotify.android:auth:1.0.0-alpha'
     compile 'com.github.kaaes:spotify-web-api-android:0.4.1'
+    compile 'com.squareup.picasso:picasso:2.5.2'
     // Dependency Injection
     compile 'com.google.dagger:dagger:2.14.1'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.14.1'
