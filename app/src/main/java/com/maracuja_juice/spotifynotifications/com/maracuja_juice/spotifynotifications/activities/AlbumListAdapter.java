@@ -56,26 +56,33 @@ public class AlbumListAdapter extends BaseAdapter {
                 (TextView) rowView.findViewById(R.id.album_list_title);
 
 // Get subtitle element
-        TextView subtitleTextView =
-                (TextView) rowView.findViewById(R.id.album_list_subtitle);
+        TextView artistTextView =
+                (TextView) rowView.findViewById(R.id.album_list_artists);
 
+        TextView releaseDateTextView = (TextView) rowView.findViewById(R.id.album_list_release_date);
 
 // Get thumbnail element
         ImageView thumbnailImageView =
                 (ImageView) rowView.findViewById(R.id.album_list_thumbnail);
 
+
         Album album = (Album) getItem(position);
+
+
 
 // 2
         titleTextView.setText(album.name);
+
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < album.artists.size(); i++) {
             stringBuilder.append(album.artists.get(i).name);
             if(album.artists.size() > i+1)
               stringBuilder.append(", ");
         }
-        subtitleTextView.setText(stringBuilder);
+        artistTextView.setText(stringBuilder);
 
+
+        releaseDateTextView.setText(album.release_date);
 // 3
         Picasso.with(mContext).load(album.images.get(0).url).placeholder(R.mipmap.ic_launcher).into(thumbnailImageView);
 

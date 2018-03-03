@@ -19,11 +19,10 @@
 
     <RelativeLayout
         android:id="@+id/album_list_text_layout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toEndOf="@id/album_list_thumbnail"
-        >
+        android:layout_toEndOf="@id/album_list_thumbnail">
 
         <TextView
             android:id="@+id/album_list_title"
@@ -32,11 +31,10 @@
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:textSize="18sp"
-            tools:text="Title"
-            />
+            tools:text="Title" />
 
         <TextView
-            android:id="@+id/album_list_subtitle"
+            android:id="@+id/album_list_artists"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/album_list_title"
@@ -46,8 +44,14 @@
             android:ellipsize="end"
             android:maxLines="3"
             android:textSize="16sp"
-            tools:text="Subtitle"
-            />
+            tools:text="Artists" />
+
+        <TextView
+            android:id="@+id/album_list_release_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/album_list_artists"
+            android:text="Release Date" />
 
     </RelativeLayout>
 </RelativeLayout>
