@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.maracuja_juice.spotifynotifications.R;
 import com.maracuja_juice.spotifynotifications.services.OnTaskCompleted;
@@ -54,5 +56,10 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
         for (int i = 0; i < albums.size(); i++) {
             Log.d(LOG_TAG, albums.get(i).name);
         }
+        ListView listView = findViewById(R.id.albumListView);
+        final ArrayAdapter adapter = new ArrayAdapter(this,
+                android.R.layout.simple_list_item_1, albums);
+        listView.setAdapter(adapter);
+
     }
 }
