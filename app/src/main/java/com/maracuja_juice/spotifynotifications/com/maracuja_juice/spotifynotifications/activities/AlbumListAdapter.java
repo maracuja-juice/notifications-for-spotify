@@ -48,7 +48,7 @@ public class AlbumListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        // TODO: sort by release date
+        // TODO: sort by release date -> use release date parser
         // TODO: don't show full list. only first 100 items probably (out of memory error)
         // TODO: add filter button
 
@@ -67,7 +67,7 @@ public class AlbumListAdapter extends BaseAdapter {
         releaseDateTextView.setText(album.release_date);
 
         String imageUrl = album.images.get(0).url;
-        // TODO: Add better placeholder iamge
+        // TODO: Add better placeholder image
         Picasso.with(mContext).load(imageUrl).placeholder(R.mipmap.ic_launcher).into(thumbnailImageView);
 
         return rowView;
