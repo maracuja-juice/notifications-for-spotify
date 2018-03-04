@@ -3,6 +3,7 @@
     package="com.maracuja_juice.spotifynotifications">
 
     <application
+        android:name=".SpotifyNotificationsApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
