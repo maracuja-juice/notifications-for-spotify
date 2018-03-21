@@ -9,7 +9,7 @@
 
 This app.
 
-### Current Features: 
+### Current Features
 
 1. a list of all albums of artists that you follow (sorted by release date, newest first). 
 The List displays:
@@ -18,7 +18,7 @@ The List displays:
    - release date
    - album art
 
-### Roadmap:
+### Roadmap
 - Save albums to Database (faster performance)
 - Don't show all abums
 - A setting that allows the app (when setting is turned on) to notify the user when there is a new album added.
