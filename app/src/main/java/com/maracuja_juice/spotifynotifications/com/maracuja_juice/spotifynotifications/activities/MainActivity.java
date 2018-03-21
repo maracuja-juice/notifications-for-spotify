@@ -57,7 +57,15 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
     public void onTaskCompleted(Object result) {
         // TODO: add progress bar.
         List<Album> albums = (List<Album>) result;
-        Collections.sort(albums, new Comparator<Album>() {
+        Collections.sort(albums, getDateComparator());
+        ListView listView = findViewById(R.id.albumListView);
+        AlbumListAdapter adapter = new AlbumListAdapter(this, albums);
+        listView.setAdapter(adapter);
+
+    }
+
+    Comparator getDateComparator() {
+        return new Comparator<Album>() {
             public int compare(Album album1, Album album2) {
                 LocalDate releaseDate1 = ReleaseDateParser.parseReleaseDate(
                         album1.release_date,
@@ -67,10 +75,6 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
                         album2.release_date_precision);
                 return releaseDate2.compareTo(releaseDate1);
             }
-        });
-        ListView listView = findViewById(R.id.albumListView);
-        AlbumListAdapter adapter = new AlbumListAdapter(this, albums);
-        listView.setAdapter(adapter);
-
+        };
     }
 }
