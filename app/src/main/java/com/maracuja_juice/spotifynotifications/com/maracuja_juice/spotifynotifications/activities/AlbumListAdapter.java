@@ -48,7 +48,6 @@ public class AlbumListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        // TODO: sort by release date -> use release date parser
         // TODO: don't show full list. only first 100 items probably (out of memory error)
         // TODO: add filter button
 
