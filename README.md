@@ -11,22 +11,25 @@ This app.
 
 ### Current Features
 
-1. a list of all albums of artists that you follow (sorted by release date, newest first). 
+- A list of all albums of artists that you follow (sorted by release date, newest first). 
 The List displays:
    - artist
    - name of the album
    - release date
    - album art
+#### Screenshot from my List
+
+   <img src="https://user-images.githubusercontent.com/16801528/37738471-6aeeba46-2d57-11e8-8df1-510ca47010a3.png" width="250">
 
 ### Roadmap
-- Save albums to Database (faster performance)
-- Don't show all abums
-- A setting that allows the app (when setting is turned on) to notify the user when there is a new album added.
 - When clicking on an album in the list it should go to a second view. 
     * This view should show details of the album as in the list
     * It should also display a list of all the tracks of the album
     * It should allow the album to be opened in Spotify
     * (maybe) Allow the album/individual tracks to be saved/removed from the library of the user
+- Save albums to Database (faster performance)
+- Only show newest albums (about 100, option to display more)
+- A setting that allows the app (when setting is turned on) to notify the user when there is a new album added.
     
 
     
