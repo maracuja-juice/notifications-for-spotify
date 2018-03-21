@@ -1,18 +1,19 @@
 <resources>
-
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/accent</item>
     </style>
 
+    <integer name="min_sweep_angle">0</integer>
+    <integer name="max_sweep_angle">300</integer>
     <style name="CircularThemeProgressBar" parent="android:Widget.Holo.ProgressBar">
-        <item name="cpb_color">@color/cpb_default_color</item>
+        <item name="cpb_color">@color/primary</item>
         <item name="cpb_stroke_width">@dimen/cpb_default_stroke_width</item>
-        <item name="cpb_min_sweep_angle">@integer/cpb_default_min_sweep_angle</item>
-        <item name="cpb_max_sweep_angle">@integer/cpb_default_max_sweep_angle</item>
+        <item name="cpb_min_sweep_angle">@integer/min_sweep_angle</item>
+        <item name="cpb_max_sweep_angle">@integer/max_sweep_angle</item>
         <item name="cpb_sweep_speed">@string/cpb_default_sweep_speed</item>
         <item name="cpb_rotation_speed">@string/cpb_default_rotation_speed</item>
     </style>
