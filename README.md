@@ -26,7 +26,7 @@ The List displays:
     * This view should show details of the album as in the list
     * It should also display a list of all the tracks of the album
     * It should allow the album to be opened in Spotify
-    * (optional) Allow the album/individual tracks to be saved/removed from the library of the user
+    * (maybe) Allow the album/individual tracks to be saved/removed from the library of the user
     
 
     
