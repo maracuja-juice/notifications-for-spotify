@@ -6,6 +6,18 @@
     android:layout_height="match_parent"
     tools:context="com.maracuja_juice.spotifynotifications.com.maracuja_juice.spotifynotifications.activities.MainActivity">
 
+    <fr.castorflex.android.circularprogressbar.CircularProgressBar xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/progressBar"
+        style="@style/CircularThemeProgressBar"
+        android:layout_width="0dp"
+        android:layout_height="97dp"
+        android:indeterminate="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ListView
         android:id="@+id/albumListView"
         android:layout_width="wrap_content"

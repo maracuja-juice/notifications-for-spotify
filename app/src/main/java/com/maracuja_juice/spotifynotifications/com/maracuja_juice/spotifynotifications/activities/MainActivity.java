@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import fr.castorflex.android.circularprogressbar.CircularProgressBar;
 import kaaes.spotify.webapi.android.models.Album;
 
 public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
@@ -56,6 +57,8 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
     @Override
     public void onTaskCompleted(Object result) {
         // TODO: add progress bar.
+        CircularProgressBar progressBar = (CircularProgressBar) findViewById(R.id.progressBar);
+        progressBar.progressiveStop();
         List<Album> albums = (List<Album>) result;
         Collections.sort(albums, getDateComparator());
         ListView listView = findViewById(R.id.albumListView);
