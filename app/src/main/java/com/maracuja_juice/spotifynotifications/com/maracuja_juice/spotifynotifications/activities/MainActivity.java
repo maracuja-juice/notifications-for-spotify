@@ -3,6 +3,7 @@ package com.maracuja_juice.spotifynotifications.com.maracuja_juice.spotifynotifi
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ListView;
 
 import com.maracuja_juice.spotifynotifications.R;
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
     }
 
     private void startSpotifyCrawlerTask() {
+        showProgressBar();
         new SpotifyCrawlerTask(token, this).execute();
     }
 
@@ -56,9 +58,8 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
 
     @Override
     public void onTaskCompleted(Object result) {
-        // TODO: add progress bar.
-        CircularProgressBar progressBar = (CircularProgressBar) findViewById(R.id.progressBar);
-        progressBar.progressiveStop();
+        hideProgressBar();
+
         List<Album> albums = (List<Album>) result;
         Collections.sort(albums, getDateComparator());
         ListView listView = findViewById(R.id.albumListView);
@@ -79,5 +80,15 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
                 return releaseDate2.compareTo(releaseDate1);
             }
         };
+    }
+
+    void hideProgressBar() {
+        CircularProgressBar progressBar = (CircularProgressBar) findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.GONE);
+    }
+
+    void showProgressBar() {
+        CircularProgressBar progressBar = (CircularProgressBar) findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.VISIBLE);
     }
 }
