@@ -7,17 +7,26 @@
 
 ## The Solution
 
-This app. (not yet though)
+This app.
 
-The goal is to make a good looking Android Material Design app with at least the following features:
+### Current Features
 
-1. List of recently added albums of all albums (sorted by date added, desc). List should display details like artist, name, album art, etc.
-2. A setting that allows the app (when setting is turned on) to notify the user when there is a new album added.
-3. When clicking on an album in the list it should go to a second view. 
+1. a list of all albums of artists that you follow (sorted by release date, newest first). 
+The List displays:
+   - artist
+   - name of the album
+   - release date
+   - album art
+
+### Roadmap
+- Save albums to Database (faster performance)
+- Don't show all abums
+- A setting that allows the app (when setting is turned on) to notify the user when there is a new album added.
+- When clicking on an album in the list it should go to a second view. 
     * This view should show details of the album as in the list
     * It should also display a list of all the tracks of the album
     * It should allow the album to be opened in Spotify
-    * (optional) Allow the album/individual tracks to be saved/removed from the library of the user
+    * (maybe) Allow the album/individual tracks to be saved/removed from the library of the user
     
 
     
