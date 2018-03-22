@@ -35,6 +35,8 @@ dependencies {
     compile 'com.github.kaaes:spotify-web-api-android:0.4.1'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'net.danlew:android.joda:2.9.9.2'
+    compile 'com.annimon:stream:1.1.9'
+
     compile 'com.github.castorflex.smoothprogressbar:library-circular:1.1.0' // TODO: probably remove.
 
     // Dependency Injection
