@@ -70,8 +70,8 @@ public class AlbumListAdapter extends BaseAdapter {
         artistTextView.setText(artistText);
 
         String imageUrl = album.images.get(0).url;
-        // TODO: Add better placeholder image
-        Picasso.with(mContext).load(imageUrl).placeholder(R.mipmap.ic_launcher).into(thumbnailImageView);
+        Picasso.with(mContext).load(imageUrl)
+                .placeholder(R.mipmap.placeholder_loading).into(thumbnailImageView);
 
         return rowView;
     }
