@@ -58,7 +58,9 @@ public class AlbumListAdapter extends BaseAdapter {
         TextView releaseDateTextView = rowView.findViewById(R.id.album_list_release_date);
 
         Album album = (Album) getItem(position);
+
         titleTextView.setText(album.name);
+        releaseDateTextView.setText(album.release_date);
 
         String artistText = getArtistText(album.artists);
         int maximumLengthDisplay = 80;
@@ -66,8 +68,6 @@ public class AlbumListAdapter extends BaseAdapter {
             artistText = artistText.substring(0, maximumLengthDisplay) + "...";
         }
         artistTextView.setText(artistText);
-
-        releaseDateTextView.setText(album.release_date);
 
         String imageUrl = album.images.get(0).url;
         // TODO: Add better placeholder image
