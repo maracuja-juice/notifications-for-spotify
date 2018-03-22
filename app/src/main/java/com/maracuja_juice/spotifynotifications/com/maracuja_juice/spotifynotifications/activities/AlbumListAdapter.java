@@ -61,6 +61,10 @@ public class AlbumListAdapter extends BaseAdapter {
         titleTextView.setText(album.name);
 
         String artistText = getArtistText(album.artists);
+        int maximumLengthDisplay = 80;
+        if(artistText.length() > maximumLengthDisplay) {
+            artistText = artistText.substring(0, maximumLengthDisplay) + "...";
+        }
         artistTextView.setText(artistText);
 
         releaseDateTextView.setText(album.release_date);
