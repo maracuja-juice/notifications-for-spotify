@@ -29,6 +29,7 @@ The List displays:
     * (maybe) Allow the album/individual tracks to be saved/removed from the library of the user
 - Save albums to Database (faster performance)
 - Only show newest albums (about 100, option to display more)
+- Progress Bar that also shows how many artists are loaded from the maximum
 - Allow filter of Album List
 - A setting that allows the app (when setting is turned on) to notify the user when there is a new album added.
     
