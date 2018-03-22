@@ -3,6 +3,7 @@ package com.maracuja_juice.spotifynotifications.services;
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.util.Log;
 
 import com.annimon.stream.Stream;
 import com.maracuja_juice.spotifynotifications.di.DaggerSpotifyApiComponent;
@@ -43,12 +44,10 @@ public class SpotifyCrawlerTask extends AsyncTask<Void, Void, List<Album>> {
         return artistCrawler.getFollowedArtists();
     }
 
-    @SuppressLint("NewApi")
     public List<Album> getAlbumsOfAllArtists(List<Artist> artists) {
         ArrayList<Album> albums = new ArrayList<>();
 
-        boolean canUseParallelStream = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
-        if (canUseParallelStream) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             artists.parallelStream().forEach(artist -> {
                 albums.addAll(getAlbumsOfSingleArtist(artist));
             });
