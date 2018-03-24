@@ -64,7 +64,6 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
         hideProgressBar();
 
         List<MyAlbum> albums = (List<MyAlbum>) result;
-        Collections.sort(albums);
 
         mRecyclerView = findViewById(R.id.albumListView);
         mRecyclerView.setHasFixedSize(true);

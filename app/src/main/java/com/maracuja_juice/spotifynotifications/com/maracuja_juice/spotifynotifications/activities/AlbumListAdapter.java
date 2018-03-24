@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,12 +12,10 @@ import com.maracuja_juice.spotifynotifications.R;
 import com.maracuja_juice.spotifynotifications.model.MyAlbum;
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
-
+import java.util.Collections;
 import java.util.List;
 
 import kaaes.spotify.webapi.android.models.Album;
-import kaaes.spotify.webapi.android.models.ArtistSimple;
 
 /**
  * Created by Maurice on 03.03.18.
@@ -48,6 +45,7 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.View
     public AlbumListAdapter(Context context, List<MyAlbum> items) {
         mDataSource = items;
         mContext = context;
+        Collections.sort(items);
     }
 
     @Override
