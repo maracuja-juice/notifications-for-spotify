@@ -1,4 +1,4 @@
-package com.maracuja_juice.spotifynotifications.com.maracuja_juice.spotifynotifications.activities;
+package com.maracuja_juice.spotifynotifications.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
