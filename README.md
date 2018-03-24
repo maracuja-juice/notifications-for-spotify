@@ -19,7 +19,7 @@ The List displays:
    - album art
 #### Screenshot from my List
 
-   <img src="https://user-images.githubusercontent.com/16801528/37738471-6aeeba46-2d57-11e8-8df1-510ca47010a3.png" width="250">
+   <img src="https://user-images.githubusercontent.com/16801528/37864067-a1e5a17c-2f69-11e8-97ce-2896cf6ce4da.png" width="250">
 
 ### Roadmap
 - When clicking on an album in the list it should go to a second view. 
