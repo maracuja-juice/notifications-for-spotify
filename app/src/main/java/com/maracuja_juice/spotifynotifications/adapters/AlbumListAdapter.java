@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.maracuja_juice.spotifynotifications.R;
-import com.maracuja_juice.spotifynotifications.model.MyAlbum;
+import com.maracuja_juice.spotifynotifications.data.MyAlbum;
 import com.squareup.picasso.Picasso;
 
 import java.util.Collections;

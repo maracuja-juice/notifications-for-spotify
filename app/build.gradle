@@ -43,11 +43,13 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'net.danlew:android.joda:2.9.9.2'
     compile 'com.annimon:stream:1.1.9'
+    apply plugin: 'io.objectbox'
+    compile 'com.google.code.gson:gson:2.8.2'
 
+    // TODO: check for the better fast scroll view
     compile 'com.simplecityapps:recyclerview-fastscroll:1.0.17'
 
     compile 'com.github.castorflex.smoothprogressbar:library-circular:1.1.0'
-    // TODO: probably remove.
 
     // Dependency Injection
     compile 'com.google.dagger:dagger:2.14.1'

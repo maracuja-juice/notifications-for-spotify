@@ -1,12 +1,18 @@
-package com.maracuja_juice.spotifynotifications.model;
+package com.maracuja_juice.spotifynotifications.data;
 
 import android.support.annotation.NonNull;
 
+import com.maracuja_juice.spotifynotifications.data.converter.AlbumConverter;
+import com.maracuja_juice.spotifynotifications.data.converter.LocalDateConverter;
+
 import org.joda.time.LocalDate;
 
-import java.util.Comparator;
 import java.util.List;
 
+import io.objectbox.annotation.Convert;
+import io.objectbox.annotation.Entity;
+import io.objectbox.annotation.Id;
+import io.objectbox.annotation.NameInDb;
 import kaaes.spotify.webapi.android.models.Album;
 import kaaes.spotify.webapi.android.models.ArtistSimple;
 
@@ -14,28 +20,26 @@ import kaaes.spotify.webapi.android.models.ArtistSimple;
  * Created by Maurice on 24.03.18.
  */
 
+@Entity
 public class MyAlbum implements Comparable<MyAlbum> {
+    @Id
+    private Long id;
+
+    @NameInDb("ALBUM")
+    @Convert(converter = AlbumConverter.class, dbType = String.class)
     private Album album;
+    @NameInDb("RELEASEDATE")
+    @Convert(converter = LocalDateConverter.class, dbType = String.class)
     private LocalDate releaseDate;
 
-    public MyAlbum(Album album, LocalDate releaseDate) {
+    public MyAlbum(Long id, Album album, LocalDate releaseDate) {
+        this.id = id;
         this.album = album;
         this.releaseDate = releaseDate;
     }
 
-    public kaaes.spotify.webapi.android.models.Album getAlbum() {
-        return album;
-    }
-
-    public void setAlbum(kaaes.spotify.webapi.android.models.Album album) {
+    public MyAlbum(Album album, LocalDate releaseDate) {
         this.album = album;
-    }
-
-    public LocalDate getReleaseDate() {
-        return releaseDate;
-    }
-
-    public void setReleaseDate(LocalDate releaseDate) {
         this.releaseDate = releaseDate;
     }
 
@@ -67,4 +71,30 @@ public class MyAlbum implements Comparable<MyAlbum> {
 
         return artistText.toString();
     }
+
+    // getters and setters
+    public Album getAlbum() {
+        return album;
+    }
+
+    public void setAlbum(kaaes.spotify.webapi.android.models.Album album) {
+        this.album = album;
+    }
+
+    public LocalDate getReleaseDate() {
+        return releaseDate;
+    }
+
+    public void setReleaseDate(LocalDate releaseDate) {
+        this.releaseDate = releaseDate;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
 }

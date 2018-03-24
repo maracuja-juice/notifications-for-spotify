@@ -4,9 +4,9 @@ import android.os.AsyncTask;
 import android.os.Build;
 
 import com.annimon.stream.Stream;
+import com.maracuja_juice.spotifynotifications.data.MyAlbum;
 import com.maracuja_juice.spotifynotifications.di.DaggerSpotifyApiComponent;
 import com.maracuja_juice.spotifynotifications.helper.ReleaseDateParser;
-import com.maracuja_juice.spotifynotifications.model.MyAlbum;
 
 import org.joda.time.LocalDate;
 

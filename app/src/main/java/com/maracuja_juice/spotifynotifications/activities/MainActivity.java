@@ -9,14 +9,16 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import com.maracuja_juice.spotifynotifications.R;
+import com.maracuja_juice.spotifynotifications.SpotifyNotificationsApplication;
 import com.maracuja_juice.spotifynotifications.adapters.AlbumListAdapter;
+import com.maracuja_juice.spotifynotifications.data.MyAlbum;
 import com.maracuja_juice.spotifynotifications.fragments.LoginFragment;
 import com.maracuja_juice.spotifynotifications.fragments.ProgressBarFragment;
 import com.maracuja_juice.spotifynotifications.interfaces.LoginListener;
 import com.maracuja_juice.spotifynotifications.model.LoginResult;
-import com.maracuja_juice.spotifynotifications.model.MyAlbum;
 import com.maracuja_juice.spotifynotifications.services.OnTaskCompleted;
 import com.maracuja_juice.spotifynotifications.services.SpotifyCrawlerTask;
 
@@ -24,11 +26,15 @@ import org.joda.time.LocalDateTime;
 
 import java.util.List;
 
+import io.objectbox.Box;
+
 public class MainActivity extends AppCompatActivity implements OnTaskCompleted, LoginListener {
 
     private static final String LOG_TAG = MainActivity.class.getName();
 
     private String token;
+
+    private Box<MyAlbum> myAlbumBox;
 
     private FragmentManager fragmentManager;
     private SharedPreferences sharedPreferences;
@@ -47,11 +53,15 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        myAlbumBox = ((SpotifyNotificationsApplication) getApplication()).getBoxStore().boxFor(MyAlbum.class);
+
         sharedPreferences = getPreferences(Context.MODE_PRIVATE);
         fragmentManager = getSupportFragmentManager();
         progressBarFragment = (ProgressBarFragment) fragmentManager.findFragmentById(R.id.fragmentProgressBar);
 
         boolean isLoggedIn = sharedPreferences.getBoolean(getString(R.string.isLoggedIn), false);
+        // TODO: implement redownload logic...
+        boolean isDownloaded = sharedPreferences.getBoolean(getString(R.string.isDownloaded), false);
         String expiration = sharedPreferences.getString(getString(R.string.expirationTime), null);
         LocalDateTime expirationTime = LocalDateTime.parse(expiration);
         token = sharedPreferences.getString(getString(R.string.token), token);
@@ -59,8 +69,14 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
         boolean tokenIsExpired = LocalDateTime.now().isAfter(expirationTime);
         if (!isLoggedIn || tokenIsExpired) {
             login();
-        } else {
+        } else if (!isDownloaded) {
             startSpotifyCrawlerTask();
+        } else {
+            long time1 = System.nanoTime();
+            List<MyAlbum> myAlbums = myAlbumBox.getAll(); // TODO: improve performance!!!
+            long time2 = System.nanoTime();
+            Log.d(LOG_TAG, String.valueOf(time2 - time1));
+            setAdapter(myAlbums);
         }
     }
 
@@ -113,17 +129,23 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
     public void onTaskCompleted(Object result) {
         progressBarFragment.hideProgressBar();
 
-        List<MyAlbum> albums = (List<MyAlbum>) result;
+        setAdapter((List<MyAlbum>) result);
 
+        // TODO don't save twice.
+        myAlbumBox.put((List<MyAlbum>) result);
+        // TODO implement redownload logic.
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(getString(R.string.isDownloaded), true);
+        editor.commit();
+    }
+
+    private void setAdapter(List<MyAlbum> myAlbums) {
         recyclerView = findViewById(R.id.albumListView);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        adapter = new AlbumListAdapter(this, albums);
+        adapter = new AlbumListAdapter(this, myAlbums);
         recyclerView.setAdapter(adapter);
-
-        // TODO: would need to save to database here so that the state gets persisted well.
-        // -> no need to re get all the values.
     }
 }
