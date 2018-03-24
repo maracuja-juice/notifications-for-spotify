@@ -16,7 +16,6 @@ import fr.castorflex.android.circularprogressbar.CircularProgressBar;
  */
 public class ProgressBarFragment extends Fragment {
 
-
     public ProgressBarFragment() {
         // Required empty public constructor
     }
