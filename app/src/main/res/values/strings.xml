@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Spotify Notifications</string>
     <string name="thumbnail">Thumbnail</string>
+    <string name="expirationTime">expirationTime</string>
+    <string name="isLoggedIn">isLoggedIn</string>
+    <string name="token">token</string>
+    <string name="isDownloaded">isDownloaded</string>
 </resources>

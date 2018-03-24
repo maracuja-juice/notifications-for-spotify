@@ -1,6 +1,8 @@
 package com.maracuja_juice.spotifynotifications.activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -18,15 +20,18 @@ import com.maracuja_juice.spotifynotifications.model.MyAlbum;
 import com.maracuja_juice.spotifynotifications.services.OnTaskCompleted;
 import com.maracuja_juice.spotifynotifications.services.SpotifyCrawlerTask;
 
+import org.joda.time.LocalDateTime;
+
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements OnTaskCompleted, LoginListener {
 
     private static final String LOG_TAG = MainActivity.class.getName();
-    private boolean isLoggedIn = false;
+
     private String token;
 
     private FragmentManager fragmentManager;
+    private SharedPreferences sharedPreferences;
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
@@ -42,10 +47,17 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        sharedPreferences = getPreferences(Context.MODE_PRIVATE);
         fragmentManager = getSupportFragmentManager();
         progressBarFragment = (ProgressBarFragment) fragmentManager.findFragmentById(R.id.fragmentProgressBar);
 
-        if (!isLoggedIn) {
+        boolean isLoggedIn = sharedPreferences.getBoolean(getString(R.string.isLoggedIn), false);
+        String expiration = sharedPreferences.getString(getString(R.string.expirationTime), null);
+        LocalDateTime expirationTime = LocalDateTime.parse(expiration);
+        token = sharedPreferences.getString(getString(R.string.token), token);
+
+        boolean tokenIsExpired = LocalDateTime.now().isAfter(expirationTime);
+        if (!isLoggedIn || tokenIsExpired) {
             login();
         } else {
             startSpotifyCrawlerTask();
@@ -63,10 +75,24 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
     @Override
     public void loginFinished(LoginResult result) {
         token = result.getToken();
+        int expiresIn = result.getTokenExpirationIn();
+
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime tokenExpiration = now.plusSeconds(expiresIn);
+        saveValuesFromLoginToPreferences(tokenExpiration);
+
         startSpotifyCrawlerTask();
 
         fragmentManager.beginTransaction().remove(loginFragment).commitNow();
         loginFragment = null;
+    }
+
+    private void saveValuesFromLoginToPreferences(LocalDateTime tokenExpiration) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(getString(R.string.expirationTime), tokenExpiration.toString());
+        editor.putString(getString(R.string.token), token);
+        editor.putBoolean(getString(R.string.isLoggedIn), true);
+        editor.commit();
     }
 
     private void startSpotifyCrawlerTask() {
@@ -96,5 +122,8 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
 
         adapter = new AlbumListAdapter(this, albums);
         recyclerView.setAdapter(adapter);
+
+        // TODO: would need to save to database here so that the state gets persisted well.
+        // -> no need to re get all the values.
     }
 }
