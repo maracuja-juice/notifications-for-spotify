@@ -65,7 +65,7 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.View
         holder.releaseDate.setText(myAlbum.getReleaseDate().toString());
         holder.artists.setText(myAlbum.getArtistText());
         Picasso.with(mContext).load(myAlbum.getImageUrl())
-                .placeholder(R.mipmap.placeholder_loading).into(holder.albumArt);
+                .placeholder(R.drawable.placeholder_album).into(holder.albumArt);
 
     }
 
