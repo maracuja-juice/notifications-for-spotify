@@ -3,6 +3,8 @@ package com.maracuja_juice.spotifynotifications.com.maracuja_juice.spotifynotifi
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ListView;
 
@@ -21,6 +23,10 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
     private static final String LOG_TAG = MainActivity.class.getName();
     private boolean isLoggedIn = false;
     private String token;
+
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,9 +64,14 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
 
         List<MyAlbum> albums = (List<MyAlbum>) result;
         Collections.sort(albums);
-        ListView listView = findViewById(R.id.albumListView);
+
+        mRecyclerView = findViewById(R.id.albumListView);
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
         AlbumListAdapter adapter = new AlbumListAdapter(this, albums);
-        listView.setAdapter(adapter);
+        mRecyclerView.setAdapter(adapter);
 
     }
 
