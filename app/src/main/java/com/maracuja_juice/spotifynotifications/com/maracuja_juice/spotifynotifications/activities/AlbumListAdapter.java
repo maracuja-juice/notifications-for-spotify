@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.maracuja_juice.spotifynotifications.R;
+import com.maracuja_juice.spotifynotifications.model.MyAlbum;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -23,9 +24,9 @@ import kaaes.spotify.webapi.android.models.ArtistSimple;
 public class AlbumListAdapter extends BaseAdapter {
     private Context mContext;
     private LayoutInflater mInflater;
-    private List<Album> mDataSource;
+    private List<MyAlbum> mDataSource;
 
-    public AlbumListAdapter(Context context, List<Album> items) {
+    public AlbumListAdapter(Context context, List<MyAlbum> items) {
         mContext = context;
         mDataSource = items;
         mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -57,16 +58,13 @@ public class AlbumListAdapter extends BaseAdapter {
         TextView artistTextView = rowView.findViewById(R.id.album_list_artists);
         TextView releaseDateTextView = rowView.findViewById(R.id.album_list_release_date);
 
-        Album album = (Album) getItem(position);
+        MyAlbum myAlbum = (MyAlbum) getItem(position);
+        Album album = myAlbum.getAlbum();
 
         titleTextView.setText(album.name);
-        releaseDateTextView.setText(album.release_date);
+        releaseDateTextView.setText(myAlbum.getReleaseDate().toString());
 
         String artistText = getArtistText(album.artists);
-        int maximumLengthDisplay = 80;
-        if(artistText.length() > maximumLengthDisplay) {
-            artistText = artistText.substring(0, maximumLengthDisplay) + "...";
-        }
         artistTextView.setText(artistText);
 
         String imageUrl = album.images.get(0).url;
@@ -84,6 +82,13 @@ public class AlbumListAdapter extends BaseAdapter {
             if(thereAreMoreArtists)
                 artistText.append(", ");
         }
+
+        int maximumLengthDisplay = 80;
+        if(artistText.length() > maximumLengthDisplay) {
+            artistText.delete(maximumLengthDisplay, artistText.length()-1);
+            artistText.append("...");
+        }
+
         return artistText.toString();
     }
 }

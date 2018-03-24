@@ -1,12 +1,14 @@
 package com.maracuja_juice.spotifynotifications.services;
 
-import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.util.Log;
 
 import com.annimon.stream.Stream;
 import com.maracuja_juice.spotifynotifications.di.DaggerSpotifyApiComponent;
+import com.maracuja_juice.spotifynotifications.helper.ReleaseDateParser;
+import com.maracuja_juice.spotifynotifications.model.MyAlbum;
+
+import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +20,7 @@ import kaaes.spotify.webapi.android.SpotifyService;
 import kaaes.spotify.webapi.android.models.Album;
 import kaaes.spotify.webapi.android.models.Artist;
 
-public class SpotifyCrawlerTask extends AsyncTask<Void, Void, List<Album>> {
+public class SpotifyCrawlerTask extends AsyncTask<Void, Void, List<MyAlbum>> {
 
     private static final String LOG_TAG = SpotifyCrawlerTask.class.getName();
     @Inject
@@ -64,15 +66,28 @@ public class SpotifyCrawlerTask extends AsyncTask<Void, Void, List<Album>> {
         return albumCrawler.getAlbumsOfArtist(artist);
     }
 
-    @Override
-    protected List<Album> doInBackground(Void... voids) {
-        List<Artist> artists = getFollowedArtists();
-        List<Album> albums = getAlbumsOfAllArtists(artists);
-        return albums;
+    private List<MyAlbum> convertAlbumsToMyAlbums(List<Album> albums) {
+        ArrayList<MyAlbum> myAlbums = new ArrayList<>();
+        Stream.of(albums).forEach(album -> {
+            LocalDate releaseDate = ReleaseDateParser.parseReleaseDate(
+                    album.release_date,
+                    album.release_date_precision);
+            MyAlbum myAlbum = new MyAlbum(album, releaseDate);
+            myAlbums.add(myAlbum);
+        });
+        return myAlbums;
     }
 
     @Override
-    protected void onPostExecute(List<Album> s) {
+    protected List<MyAlbum> doInBackground(Void... voids) {
+        List<Artist> artists = getFollowedArtists();
+        List<Album> albums = getAlbumsOfAllArtists(artists);
+        List<MyAlbum> myAlbums = convertAlbumsToMyAlbums(albums);
+        return myAlbums;
+    }
+
+    @Override
+    protected void onPostExecute(List<MyAlbum> s) {
         super.onPostExecute(s);
         listener.onTaskCompleted(s);
     }

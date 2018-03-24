@@ -7,18 +7,14 @@ import android.view.View;
 import android.widget.ListView;
 
 import com.maracuja_juice.spotifynotifications.R;
-import com.maracuja_juice.spotifynotifications.helper.ReleaseDateParser;
+import com.maracuja_juice.spotifynotifications.model.MyAlbum;
 import com.maracuja_juice.spotifynotifications.services.OnTaskCompleted;
 import com.maracuja_juice.spotifynotifications.services.SpotifyCrawlerTask;
 
-import org.joda.time.LocalDate;
-
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import fr.castorflex.android.circularprogressbar.CircularProgressBar;
-import kaaes.spotify.webapi.android.models.Album;
 
 public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
 
@@ -60,26 +56,12 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
     public void onTaskCompleted(Object result) {
         hideProgressBar();
 
-        List<Album> albums = (List<Album>) result;
-        Collections.sort(albums, getDateComparator());
+        List<MyAlbum> albums = (List<MyAlbum>) result;
+        Collections.sort(albums);
         ListView listView = findViewById(R.id.albumListView);
         AlbumListAdapter adapter = new AlbumListAdapter(this, albums);
         listView.setAdapter(adapter);
 
-    }
-
-    Comparator getDateComparator() {
-        return new Comparator<Album>() {
-            public int compare(Album album1, Album album2) {
-                LocalDate releaseDate1 = ReleaseDateParser.parseReleaseDate(
-                        album1.release_date,
-                        album1.release_date_precision);
-                LocalDate releaseDate2 = ReleaseDateParser.parseReleaseDate(
-                        album2.release_date,
-                        album2.release_date_precision);
-                return releaseDate2.compareTo(releaseDate1);
-            }
-        };
     }
 
     void hideProgressBar() {
