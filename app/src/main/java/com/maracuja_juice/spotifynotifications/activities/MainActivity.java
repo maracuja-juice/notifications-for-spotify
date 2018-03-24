@@ -76,7 +76,8 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
             long time1 = System.nanoTime();
             List<MyAlbum> myAlbums = myAlbumBox.getAll(); // TODO: improve performance!!!
             long time2 = System.nanoTime();
-            Log.d(LOG_TAG, String.valueOf(time2 - time1));
+            Log.i(LOG_TAG, String.valueOf(time2 - time1) + " for " + myAlbums.size() + " items.");
+
             setAdapter(myAlbums);
         }
     }
@@ -133,6 +134,8 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
         setAdapter((List<MyAlbum>) result);
 
         // TODO don't save twice.
+        // TODO: performance!
+        myAlbumBox.removeAll(); // TODO remove this line later.
         myAlbumBox.put((List<MyAlbum>) result);
         // TODO implement redownload logic.
         SharedPreferences.Editor editor = sharedPreferences.edit();
