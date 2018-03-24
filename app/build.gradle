@@ -46,8 +46,7 @@ dependencies {
     apply plugin: 'io.objectbox'
     compile 'com.google.code.gson:gson:2.8.2'
 
-    // TODO: check for the better fast scroll view
-    compile 'com.simplecityapps:recyclerview-fastscroll:1.0.17'
+    compile 'com.l4digital.fastscroll:fastscroll:1.0.4'
 
     compile 'com.github.castorflex.smoothprogressbar:library-circular:1.1.0'
 

@@ -21,4 +21,16 @@
         <item name="android:indeterminate">true</item>
     </style>
 
+    <declare-styleable name="FastScrollRecyclerView">
+        <attr name="handleColor" format="color" />
+        <attr name="trackColo" format="color" />
+        <attr name="hideScrollbar" format="boolean" />
+        <attr name="showTrack" format="boolean" />
+    </declare-styleable>
+    <style name="fastScrollbar" >
+        <item name="handleColor">@color/primary</item>
+        <item name="trackColor">@color/background_white</item>
+        <item name="hideScrollbar">true</item>
+        <item name="showTrack">false</item>
+    </style>
 </resources>

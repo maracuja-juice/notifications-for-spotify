@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="fastscroll_bubble_size">0dp</dimen>
+    <dimen name="fastscroll_bubble_textsize">0sp</dimen>
+    <dimen name="fastscroll_bubble_padding">0dp</dimen>
+</resources>

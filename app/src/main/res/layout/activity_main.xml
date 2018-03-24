@@ -18,20 +18,10 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.504" />
 
-    <!-- TODO: style scroll bar in a round way! -->
-    <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
+    <com.l4digital.fastscroll.FastScrollRecyclerView
         android:id="@+id/albumListView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-
-        app:fastScrollThumbColor="@color/primary"
-        app:fastScrollTrackColor="@color/background_white"
-
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        style="@style/fastScrollbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </android.support.constraint.ConstraintLayout>
