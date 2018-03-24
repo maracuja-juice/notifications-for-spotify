@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
         token = sharedPreferences.getString(getString(R.string.token), token);
 
         boolean tokenIsExpired = LocalDateTime.now().isAfter(expirationTime);
+        // TODO: don't relogin if downloaded -> redownload logic.
         if (!isLoggedIn || tokenIsExpired) {
             login();
         } else if (!isDownloaded) {
