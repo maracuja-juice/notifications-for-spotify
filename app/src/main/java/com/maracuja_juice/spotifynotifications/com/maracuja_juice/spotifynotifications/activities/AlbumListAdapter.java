@@ -60,9 +60,6 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.View
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        // TODO: don't show full list. only first 100 items probably (out of memory error? -> test)
-        // TODO: add filter button
-
         MyAlbum myAlbum = mDataSource.get(position);
         Album album = myAlbum.getAlbum();
 

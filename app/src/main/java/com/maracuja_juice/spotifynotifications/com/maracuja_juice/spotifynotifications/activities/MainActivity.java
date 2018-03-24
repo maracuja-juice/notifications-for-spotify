@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ListView;
 
 import com.maracuja_juice.spotifynotifications.R;
 import com.maracuja_juice.spotifynotifications.model.MyAlbum;
@@ -27,6 +26,8 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+
+    // TODO: add filter button
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,8 +71,8 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        AlbumListAdapter adapter = new AlbumListAdapter(this, albums);
-        mRecyclerView.setAdapter(adapter);
+        mAdapter = new AlbumListAdapter(this, albums);
+        mRecyclerView.setAdapter(mAdapter);
 
     }
 
