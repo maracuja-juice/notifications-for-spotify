@@ -4,21 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.maracuja_juice.spotifynotifications.com.maracuja_juice.spotifynotifications.activities.MainActivity">
+    tools:context="com.maracuja_juice.spotifynotifications.activities.MainActivity">
 
-    <fr.castorflex.android.circularprogressbar.CircularProgressBar xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/progressBar"
-        style="@style/CircularThemeProgressBar"
-        android:layout_width="0dp"
-        android:layout_height="97dp"
-        android:indeterminate="true"
-        android:visibility="gone"
+    <fragment
+        android:id="@+id/fragmentProgressBar"
+        android:name="com.maracuja_juice.spotifynotifications.fragments.ProgressBarFragment"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.504" />
 
     <!-- TODO: style scroll bar in a round way! -->
     <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
