@@ -1,11 +1,11 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 27
     defaultConfig {
         applicationId "com.maracuja_juice.spotifynotifications"
-        minSdkVersion 20
-        targetSdkVersion 26
+        minSdkVersion 15
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -24,12 +24,12 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation 'com.android.support:customtabs:26.1.0'
-    implementation 'com.android.support:design:26.1.0'
-    implementation 'com.android.support:recyclerview-v7:26.1.0'
+    implementation 'com.android.support:appcompat-v7:27.1.0'
+    implementation 'com.android.support:customtabs:27.1.0'
+    implementation 'com.android.support:design:27.1.0'
+    implementation 'com.android.support:recyclerview-v7:27.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-    implementation 'com.android.support:support-v4:26.1.0'
+    implementation 'com.android.support:support-v4:27.1.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
@@ -37,18 +37,20 @@ dependencies {
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
 
-    // Libraries
+    // Util
     compile 'com.spotify.android:auth:1.0.0-alpha'
     compile 'com.github.kaaes:spotify-web-api-android:0.4.1'
-    compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'net.danlew:android.joda:2.9.9.2'
     compile 'com.annimon:stream:1.1.9'
     apply plugin: 'io.objectbox'
-    compile 'com.google.code.gson:gson:2.8.2'
-
+    // JSON
+    compile 'com.fasterxml.jackson.core:jackson-core:2.9.4'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.9.4'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.9.4'
+    // UI
     compile 'com.l4digital.fastscroll:fastscroll:1.0.4'
-
     compile 'com.github.castorflex.smoothprogressbar:library-circular:1.1.0'
+    compile 'com.squareup.picasso:picasso:2.5.2'
 
     // Dependency Injection
     compile 'com.google.dagger:dagger:2.14.1'

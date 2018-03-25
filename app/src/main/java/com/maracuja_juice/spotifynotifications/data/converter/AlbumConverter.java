@@ -1,6 +1,9 @@
 package com.maracuja_juice.spotifynotifications.data.converter;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.IOException;
 
 import io.objectbox.converter.PropertyConverter;
 import kaaes.spotify.webapi.android.models.Album;
@@ -11,18 +14,31 @@ import kaaes.spotify.webapi.android.models.Album;
  */
 
 public class AlbumConverter implements PropertyConverter<Album, String> {
+    private ObjectMapper mapper = new ObjectMapper(); // create once, reuse
+
     @Override
     public Album convertToEntityProperty(String databaseValue) {
         if (databaseValue == null) {
             return null;
         }
-        Gson gson = new Gson();
-        return gson.fromJson(databaseValue, Album.class);
+
+        try {
+            return mapper.readValue(databaseValue, Album.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     @Override
     public String convertToDatabaseValue(Album entityProperty) {
-        Gson gson = new Gson();
-        return gson.toJson(entityProperty);
+        try {
+            return mapper.writeValueAsString(entityProperty);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }
