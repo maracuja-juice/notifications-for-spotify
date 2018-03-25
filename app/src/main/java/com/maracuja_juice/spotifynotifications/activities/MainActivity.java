@@ -68,13 +68,14 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
 
         boolean tokenIsExpired = LocalDateTime.now().isAfter(expirationTime);
         // TODO: don't relogin if downloaded -> redownload logic.
+        //isLoggedIn = false; // TODO: remove this later. this is only for testing the internet connection error.
         if (!isLoggedIn || tokenIsExpired) {
             login();
         } else if (!isDownloaded) {
             startSpotifyCrawlerTask();
         } else {
             long time1 = System.nanoTime();
-            List<MyAlbum> myAlbums = myAlbumBox.getAll(); // TODO: improve performance!!!
+            List<MyAlbum> myAlbums = myAlbumBox.getAll(); // TODO: background task???
             long time2 = System.nanoTime();
             Log.i(LOG_TAG, String.valueOf(time2 - time1) + " for " + myAlbums.size() + " items.");
 
@@ -135,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
 
         // TODO don't save twice.
         // TODO: performance!
+        // TODO: separate thread so that ui doesn't block?
         myAlbumBox.removeAll(); // TODO remove this line later.
         myAlbumBox.put((List<MyAlbum>) result);
         // TODO implement redownload logic.
