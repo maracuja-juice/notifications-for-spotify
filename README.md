@@ -21,18 +21,15 @@ The List displays:
 
    <img src="https://user-images.githubusercontent.com/16801528/37864067-a1e5a17c-2f69-11e8-97ce-2896cf6ce4da.png" width="250">
 
-### Roadmap
+### Planned future improvements
+- Improve performance by saving data to database
+- A setting that allows the app (when setting is turned on) to notify the user when there is a new album added. (-> regularly downloading all albums and merging them with the database)
 - When clicking on an album in the list it should go to a second view. 
     * This view should show details of the album as in the list
     * It should also display a list of all the tracks of the album
     * It should allow the album to be opened in Spotify
     * (maybe) Allow the album/individual tracks to be saved/removed from the library of the user
-- Save albums to Database (faster performance)
-- Progress Bar that also shows how many artists are loaded from the maximum
-- Allow filter of Album List
-- A setting that allows the app (when setting is turned on) to notify the user when there is a new album added.
-    
-
+- Allow filter of Album List by date
     
 ## Setup of Development environment
 
