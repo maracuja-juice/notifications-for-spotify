@@ -43,9 +43,8 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.View
     }
 
     public AlbumListAdapter(Context context, List<MyAlbum> items) {
-        dataSource = items;
+        setDataSource(items);
         this.context = context;
-        Collections.sort(items);
     }
 
     @Override

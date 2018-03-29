@@ -24,6 +24,7 @@ import com.maracuja_juice.spotifynotifications.services.SpotifyCrawlerTask;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.objectbox.Box;
@@ -60,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
         fragmentManager = getSupportFragmentManager();
         progressBarFragment = (ProgressBarFragment) fragmentManager.findFragmentById(R.id.fragmentProgressBar);
         progressBarFragment.showProgressBar();
+        setAdapter(new ArrayList<>());
 
         startupPreferencesBox = getBoxStore().boxFor(StartupPreferences.class);
         startupPreferences = getStartupPreferences();
