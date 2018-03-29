@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:974610853212743874",
-      "lastPropertyId": "4:982334683014698474",
+      "lastPropertyId": "5:1891488342595731185",
       "name": "MyAlbum",
       "properties": [
         {
@@ -17,7 +17,7 @@
           "name": "id"
         },
         {
-          "id": "4:982334683014698474",
+          "id": "5:1891488342595731185",
           "name": "RELEASEDATE"
         }
       ],
@@ -30,13 +30,11 @@
   "lastSequenceId": "0:0",
   "modelVersion": 4,
   "modelVersionParserMinimum": 4,
-  "newUidPool": [
-    1891488342595731185
-  ],
   "retiredEntityUids": [],
   "retiredIndexUids": [],
   "retiredPropertyUids": [
-    4178578248811631295
+    4178578248811631295,
+    982334683014698474
   ],
   "retiredRelationUids": [],
   "version": 1

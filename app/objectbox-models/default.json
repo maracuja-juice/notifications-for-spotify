@@ -22,9 +22,33 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "2:385966696931947680",
+      "lastPropertyId": "4:4700592331592519020",
+      "name": "StartupPreferences",
+      "properties": [
+        {
+          "id": "1:7372807530074109262",
+          "name": "id"
+        },
+        {
+          "id": "2:3876367485336218609",
+          "name": "tokenExpiration"
+        },
+        {
+          "id": "3:361208438847186121",
+          "name": "token"
+        },
+        {
+          "id": "4:4700592331592519020",
+          "name": "lastDownload"
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "1:974610853212743874",
+  "lastEntityId": "2:385966696931947680",
   "lastIndexId": "0:0",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",

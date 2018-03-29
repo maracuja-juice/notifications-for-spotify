@@ -1,8 +1,6 @@
 package com.maracuja_juice.spotifynotifications.activities;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -15,6 +13,7 @@ import com.maracuja_juice.spotifynotifications.R;
 import com.maracuja_juice.spotifynotifications.SpotifyNotificationsApplication;
 import com.maracuja_juice.spotifynotifications.adapters.AlbumListAdapter;
 import com.maracuja_juice.spotifynotifications.data.MyAlbum;
+import com.maracuja_juice.spotifynotifications.data.StartupPreferences;
 import com.maracuja_juice.spotifynotifications.fragments.LoginFragment;
 import com.maracuja_juice.spotifynotifications.fragments.ProgressBarFragment;
 import com.maracuja_juice.spotifynotifications.interfaces.LoginListener;
@@ -22,11 +21,13 @@ import com.maracuja_juice.spotifynotifications.model.LoginResult;
 import com.maracuja_juice.spotifynotifications.services.OnTaskCompleted;
 import com.maracuja_juice.spotifynotifications.services.SpotifyCrawlerTask;
 
+import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
 import java.util.List;
 
 import io.objectbox.Box;
+import io.objectbox.BoxStore;
 
 public class MainActivity extends AppCompatActivity implements OnTaskCompleted, LoginListener {
 
@@ -35,9 +36,9 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
     private String token;
 
     private Box<MyAlbum> myAlbumBox;
+    private Box<StartupPreferences> startupPreferencesBox;
 
     private FragmentManager fragmentManager;
-    private SharedPreferences sharedPreferences;
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
     private ProgressBarFragment progressBarFragment;
     private LoginFragment loginFragment;
 
+    private StartupPreferences startupPreferences;
     // TODO: add filter button
 
     @Override
@@ -53,49 +55,32 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        myAlbumBox = ((SpotifyNotificationsApplication) getApplication()).getBoxStore().boxFor(MyAlbum.class);
-
-        sharedPreferences = getPreferences(Context.MODE_PRIVATE);
+        BoxStore boxStore = ((SpotifyNotificationsApplication) getApplication()).getBoxStore();
+        myAlbumBox = boxStore.boxFor(MyAlbum.class);
+        startupPreferencesBox = boxStore.boxFor(StartupPreferences.class);
         fragmentManager = getSupportFragmentManager();
         progressBarFragment = (ProgressBarFragment) fragmentManager.findFragmentById(R.id.fragmentProgressBar);
+        startupPreferences = getStartupPreferences();
 
-        // TODO THIS IS SO FUCKING UGLY!!!. See below me
-        // TODO: make an object out of this (name => configuration or something??) and save it to database
-        boolean isLoggedIn = sharedPreferences.getBoolean(getString(R.string.isLoggedIn), false);
-        // TODO: implement redownload logic...
-        boolean isDownloaded = sharedPreferences.getBoolean(getString(R.string.isDownloaded), false);
-        String lastDownload = sharedPreferences.getString(getString(R.string.lastDownload), null);
-        LocalDateTime lastDownloadTime = null;
-        if (lastDownload != null) {
-            lastDownloadTime = LocalDateTime.parse(lastDownload);
+        boolean needToLogin = true;
+        boolean needToDownload = true;
+        if(startupPreferences != null) {
+            // TODO: mock this datetime or something? Or somehow else make it adjustable for tests
+            needToLogin = startupPreferences.needToLogin(LocalDateTime.now());
+            needToDownload = startupPreferences.needToDownload(LocalDate.now().minusDays(1));
+            token = startupPreferences.getToken();
+        } else {
+            startupPreferences = new StartupPreferences();
         }
-        String expiration = sharedPreferences.getString(getString(R.string.expirationTime), null);
-        LocalDateTime expirationTime = null;
-        if (expiration != null) {
-            expirationTime = LocalDateTime.parse(expiration);
-        }
-        token = sharedPreferences.getString(getString(R.string.token), token);
 
-        boolean tokenIsExpired = false;
-        if (expirationTime != null) {
-            tokenIsExpired = LocalDateTime.now().isAfter(expirationTime);
-        }
-        boolean shouldRedownload = false;
-        if (lastDownloadTime != null) {
-            shouldRedownload = LocalDateTime.now().minusDays(1).isAfter(lastDownloadTime);
-        }
-        boolean shouldRelogin = !isLoggedIn || tokenIsExpired;
-        boolean shouldDownload = !isDownloaded || shouldRedownload;
-
-        // TODO: don't relogin if downloaded -> redownload logic.
-        //isLoggedIn = false; // TODO: remove this later. this is only for testing the internet connection error.
-        if (shouldDownload) {
-            if (shouldRelogin) {
+        if (needToDownload) {
+            if (needToLogin) {
                 login();
             } else {
                 startSpotifyCrawlerTask();
             }
         } else {
+            // TODO: remove performance report.
             long time1 = System.nanoTime();
             List<MyAlbum> myAlbums = myAlbumBox.getAll(); // TODO: background task???
             long time2 = System.nanoTime();
@@ -115,12 +100,12 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
 
     @Override
     public void loginFinished(LoginResult result) {
-        token = result.getToken();
+        String token = result.getToken();
         int expiresIn = result.getTokenExpirationIn();
 
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime tokenExpiration = now.plusSeconds(expiresIn);
-        saveValuesFromLoginToPreferences(tokenExpiration);
+        saveValuesFromLoginToPreferences(token, tokenExpiration);
 
         startSpotifyCrawlerTask();
 
@@ -128,12 +113,12 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
         loginFragment = null;
     }
 
-    private void saveValuesFromLoginToPreferences(LocalDateTime tokenExpiration) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(getString(R.string.expirationTime), tokenExpiration.toString());
-        editor.putString(getString(R.string.token), token);
-        editor.putBoolean(getString(R.string.isLoggedIn), true);
-        editor.commit();
+    private void saveValuesFromLoginToPreferences(String token, LocalDateTime tokenExpiration) {
+        this.token = token;
+
+        startupPreferences.setTokenExpiration(tokenExpiration);
+        startupPreferences.setToken(token);
+        startupPreferencesBox.put(startupPreferences);
     }
 
     private void startSpotifyCrawlerTask() {
@@ -156,16 +141,13 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
 
         setAdapter((List<MyAlbum>) result);
 
-        // TODO don't save twice.
-        // TODO: performance!
-        // TODO: separate thread so that ui doesn't block?
+        // TODO don't save twice -> merge!
+        // TODO:  performance! -> separate thread so that ui doesn't block?
         myAlbumBox.removeAll(); // TODO remove this line later.
         myAlbumBox.put((List<MyAlbum>) result);
 
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(getString(R.string.isDownloaded), true);
-        editor.putString(getString(R.string.lastDownload), LocalDateTime.now().toString());
-        editor.commit();
+        startupPreferences.setLastDownload(LocalDate.now());
+        startupPreferencesBox.put(startupPreferences);
     }
 
     private void setAdapter(List<MyAlbum> myAlbums) {
@@ -176,5 +158,14 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
 
         adapter = new AlbumListAdapter(this, myAlbums);
         recyclerView.setAdapter(adapter);
+    }
+
+    private StartupPreferences getStartupPreferences() {
+        List<StartupPreferences> allPreferences = startupPreferencesBox.getAll();
+        StartupPreferences preferences = null;
+        if(allPreferences.size() != 0) {
+            preferences = allPreferences.get(0);
+        }
+        return preferences;
     }
 }
