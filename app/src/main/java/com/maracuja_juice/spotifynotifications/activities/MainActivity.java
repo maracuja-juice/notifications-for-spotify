@@ -24,10 +24,15 @@ import com.maracuja_juice.spotifynotifications.services.SpotifyCrawlerTask;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
+import java.util.Collections;
 import java.util.List;
 
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
+import io.objectbox.TxCallback;
+import io.objectbox.android.AndroidScheduler;
+import io.objectbox.query.Query;
+import io.objectbox.reactive.DataObserver;
 
 public class MainActivity extends AppCompatActivity implements OnTaskCompleted, LoginListener {
 
@@ -35,7 +40,6 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
 
     private String token;
 
-    private Box<MyAlbum> myAlbumBox;
     private Box<StartupPreferences> startupPreferencesBox;
 
     private FragmentManager fragmentManager;
@@ -48,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
     private LoginFragment loginFragment;
 
     private StartupPreferences startupPreferences;
+
     // TODO: add filter button
 
     @Override
@@ -55,16 +60,21 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        BoxStore boxStore = ((SpotifyNotificationsApplication) getApplication()).getBoxStore();
-        myAlbumBox = boxStore.boxFor(MyAlbum.class);
-        startupPreferencesBox = boxStore.boxFor(StartupPreferences.class);
         fragmentManager = getSupportFragmentManager();
         progressBarFragment = (ProgressBarFragment) fragmentManager.findFragmentById(R.id.fragmentProgressBar);
+        progressBarFragment.showProgressBar();
+
+        startupPreferencesBox = getBoxStore().boxFor(StartupPreferences.class);
         startupPreferences = getStartupPreferences();
 
+        Box<MyAlbum> myAlbumBox = getBoxStore().boxFor(MyAlbum.class);
+        Query<MyAlbum> query = myAlbumBox.query().build();
+        query.subscribe().on(AndroidScheduler.mainThread()).observer(data -> updateList(data));
+
+        // TODO separate method
         boolean needToLogin = true;
         boolean needToDownload = true;
-        if(startupPreferences != null) {
+        if (startupPreferences != null) {
             // TODO: mock this datetime or something? Or somehow else make it adjustable for tests
             needToLogin = startupPreferences.needToLogin(LocalDateTime.now());
             needToDownload = startupPreferences.needToDownload(LocalDate.now().minusDays(1));
@@ -73,20 +83,14 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
             startupPreferences = new StartupPreferences();
         }
 
+        // TODO separate method
         if (needToDownload) {
             if (needToLogin) {
+                Log.d(LOG_TAG, "logging in...");
                 login();
             } else {
                 startSpotifyCrawlerTask();
             }
-        } else {
-            // TODO: remove performance report.
-            long time1 = System.nanoTime();
-            List<MyAlbum> myAlbums = myAlbumBox.getAll(); // TODO: background task???
-            long time2 = System.nanoTime();
-            Log.i(LOG_TAG, String.valueOf(time2 - time1) + " for " + myAlbums.size() + " items.");
-
-            setAdapter(myAlbums);
         }
     }
 
@@ -113,19 +117,6 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
         loginFragment = null;
     }
 
-    private void saveValuesFromLoginToPreferences(String token, LocalDateTime tokenExpiration) {
-        this.token = token;
-
-        startupPreferences.setTokenExpiration(tokenExpiration);
-        startupPreferences.setToken(token);
-        startupPreferencesBox.put(startupPreferences);
-    }
-
-    private void startSpotifyCrawlerTask() {
-        progressBarFragment.showProgressBar();
-        new SpotifyCrawlerTask(token, this).execute();
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -135,19 +126,39 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
         }
     }
 
+    private void saveValuesFromLoginToPreferences(String token, LocalDateTime tokenExpiration) {
+        this.token = token;
+
+        startupPreferences.setTokenExpiration(tokenExpiration);
+        startupPreferences.setToken(token);
+        startupPreferencesBox.put(startupPreferences);
+    }
+
+    private void startSpotifyCrawlerTask() {
+        Log.d(LOG_TAG, "downloading");
+        new SpotifyCrawlerTask(token, this).execute();
+    }
+
     @Override
     public void onTaskCompleted(Object result) {
-        progressBarFragment.hideProgressBar();
+        Log.d(LOG_TAG, "finished downloading");
 
-        setAdapter((List<MyAlbum>) result);
-
-        // TODO don't save twice -> merge!
-        // TODO:  performance! -> separate thread so that ui doesn't block?
-        myAlbumBox.removeAll(); // TODO remove this line later.
-        myAlbumBox.put((List<MyAlbum>) result);
+        saveAlbumsToDatabase((List<MyAlbum>) result);
 
         startupPreferences.setLastDownload(LocalDate.now());
         startupPreferencesBox.put(startupPreferences);
+    }
+
+    // TODO database actions should be in separate class (or something else)
+    private void saveAlbumsToDatabase(List<MyAlbum> myAlbums) {
+        getBoxStore().runInTxAsync(() -> {
+                    BoxStore store = getBoxStore();
+                    Box<MyAlbum> albumBox = store.boxFor(MyAlbum.class);
+                    // TODO don't save twice -> merge!
+                    albumBox.removeAll();
+                    albumBox.put(myAlbums);
+                }, null
+        );
     }
 
     private void setAdapter(List<MyAlbum> myAlbums) {
@@ -160,12 +171,31 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
         recyclerView.setAdapter(adapter);
     }
 
+    private void updateList(List<MyAlbum> data) {
+        if(progressBarFragment != null) {
+            progressBarFragment.hideProgressBar();
+        }
+
+        if(adapter == null) {
+            setAdapter(data);
+        } else {
+            AlbumListAdapter adapter = (AlbumListAdapter) recyclerView.getAdapter();
+            adapter.setDataSource(data);
+            adapter.notifyDataSetChanged();
+        }
+    }
+
     private StartupPreferences getStartupPreferences() {
         List<StartupPreferences> allPreferences = startupPreferencesBox.getAll();
         StartupPreferences preferences = null;
-        if(allPreferences.size() != 0) {
+        if (allPreferences.size() != 0) {
             preferences = allPreferences.get(0);
         }
         return preferences;
+}
+
+    private BoxStore getBoxStore() {
+        return ((SpotifyNotificationsApplication) getApplication()).getBoxStore();
     }
+
 }

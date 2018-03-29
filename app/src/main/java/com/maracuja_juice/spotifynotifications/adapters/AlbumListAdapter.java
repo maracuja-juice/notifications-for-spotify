@@ -22,8 +22,8 @@ import kaaes.spotify.webapi.android.models.Album;
  */
 
 public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.ViewHolder> {
-    private List<MyAlbum> mDataSource;
-    private Context mContext;
+    private List<MyAlbum> dataSource;
+    private Context context;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // TODO: onclick would be handled here.
@@ -43,8 +43,8 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.View
     }
 
     public AlbumListAdapter(Context context, List<MyAlbum> items) {
-        mDataSource = items;
-        mContext = context;
+        dataSource = items;
+        this.context = context;
         Collections.sort(items);
     }
 
@@ -58,19 +58,24 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.View
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        MyAlbum myAlbum = mDataSource.get(position);
+        MyAlbum myAlbum = dataSource.get(position);
         Album album = myAlbum.getAlbum();
 
         holder.albumTitle.setText(album.name);
         holder.releaseDate.setText(myAlbum.getReleaseDate().toString());
         holder.artists.setText(myAlbum.getArtistText());
-        Picasso.with(mContext).load(myAlbum.getImageUrl())
+        Picasso.with(context).load(myAlbum.getImageUrl())
                 .placeholder(R.drawable.placeholder_album).into(holder.albumArt);
 
     }
 
     @Override
     public int getItemCount() {
-        return mDataSource.size();
+        return dataSource.size();
+    }
+
+    public void setDataSource(List<MyAlbum> albums) {
+        Collections.sort(albums);
+        dataSource = albums;
     }
 }
