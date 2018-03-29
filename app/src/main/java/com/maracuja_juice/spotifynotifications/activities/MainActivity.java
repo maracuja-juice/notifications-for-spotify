@@ -24,15 +24,12 @@ import com.maracuja_juice.spotifynotifications.services.SpotifyCrawlerTask;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
-import java.util.Collections;
 import java.util.List;
 
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
-import io.objectbox.TxCallback;
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.query.Query;
-import io.objectbox.reactive.DataObserver;
 
 public class MainActivity extends AppCompatActivity implements OnTaskCompleted, LoginListener {
 
