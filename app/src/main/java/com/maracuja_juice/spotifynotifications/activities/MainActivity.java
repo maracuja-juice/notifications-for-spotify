@@ -59,20 +59,42 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
         fragmentManager = getSupportFragmentManager();
         progressBarFragment = (ProgressBarFragment) fragmentManager.findFragmentById(R.id.fragmentProgressBar);
 
+        // TODO THIS IS SO FUCKING UGLY!!!. See below me
+        // TODO: make an object out of this (name => configuration or something??) and save it to database
         boolean isLoggedIn = sharedPreferences.getBoolean(getString(R.string.isLoggedIn), false);
         // TODO: implement redownload logic...
         boolean isDownloaded = sharedPreferences.getBoolean(getString(R.string.isDownloaded), false);
+        String lastDownload = sharedPreferences.getString(getString(R.string.lastDownload), null);
+        LocalDateTime lastDownloadTime = null;
+        if (lastDownload != null) {
+            lastDownloadTime = LocalDateTime.parse(lastDownload);
+        }
         String expiration = sharedPreferences.getString(getString(R.string.expirationTime), null);
-        LocalDateTime expirationTime = LocalDateTime.parse(expiration);
+        LocalDateTime expirationTime = null;
+        if (expiration != null) {
+            expirationTime = LocalDateTime.parse(expiration);
+        }
         token = sharedPreferences.getString(getString(R.string.token), token);
 
-        boolean tokenIsExpired = LocalDateTime.now().isAfter(expirationTime);
+        boolean tokenIsExpired = false;
+        if (expirationTime != null) {
+            tokenIsExpired = LocalDateTime.now().isAfter(expirationTime);
+        }
+        boolean shouldRedownload = false;
+        if (lastDownloadTime != null) {
+            shouldRedownload = LocalDateTime.now().minusDays(1).isAfter(lastDownloadTime);
+        }
+        boolean shouldRelogin = !isLoggedIn || tokenIsExpired;
+        boolean shouldDownload = !isDownloaded || shouldRedownload;
+
         // TODO: don't relogin if downloaded -> redownload logic.
         //isLoggedIn = false; // TODO: remove this later. this is only for testing the internet connection error.
-        if (!isLoggedIn || tokenIsExpired) {
-            login();
-        } else if (!isDownloaded) {
-            startSpotifyCrawlerTask();
+        if (shouldDownload) {
+            if (shouldRelogin) {
+                login();
+            } else {
+                startSpotifyCrawlerTask();
+            }
         } else {
             long time1 = System.nanoTime();
             List<MyAlbum> myAlbums = myAlbumBox.getAll(); // TODO: background task???
@@ -139,9 +161,10 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
         // TODO: separate thread so that ui doesn't block?
         myAlbumBox.removeAll(); // TODO remove this line later.
         myAlbumBox.put((List<MyAlbum>) result);
-        // TODO implement redownload logic.
+
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(getString(R.string.isDownloaded), true);
+        editor.putString(getString(R.string.lastDownload), LocalDateTime.now().toString());
         editor.commit();
     }
 

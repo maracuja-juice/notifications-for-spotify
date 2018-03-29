@@ -5,4 +5,5 @@
     <string name="isLoggedIn">isLoggedIn</string>
     <string name="token">token</string>
     <string name="isDownloaded">isDownloaded</string>
+    <string name="lastDownload">lastDownload</string>
 </resources>
