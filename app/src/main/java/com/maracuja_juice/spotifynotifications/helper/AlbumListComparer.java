@@ -12,6 +12,10 @@ import kaaes.spotify.webapi.android.models.Album;
  */
 
 public class AlbumListComparer {
+    private AlbumListComparer() {
+
+    }
+
     public static List<Album> getNewAlbums(List<Album> downloadedAlbums, List<Album> savedAlbums) {
         List<Album> newAlbums = Stream.of(downloadedAlbums).filter(downloadedAlbum -> {
             boolean albumIsAlreadySaved = Stream.of(savedAlbums)

@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
 
     @Override
     public void loginFinished(LoginResult result) {
-        String token = result.getToken();
+        token = result.getToken();
         int expiresIn = result.getTokenExpirationIn();
         saveValuesFromLoginToPreferences(token, expiresIn);
 
@@ -134,7 +134,6 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime tokenExpiration = now.plusSeconds(tokenExpiresInSeconds);
 
-        this.token = token;
         startupPreferences.setTokenExpiration(tokenExpiration);
         startupPreferences.setToken(token);
         startupPreferencesBox.put(startupPreferences);
@@ -191,9 +190,9 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
         if (adapter == null) {
             setAdapter(data);
         } else {
-            AlbumListAdapter adapter = (AlbumListAdapter) recyclerView.getAdapter();
-            adapter.setDataSource(data);
-            adapter.notifyDataSetChanged();
+            AlbumListAdapter albumListAdapter = (AlbumListAdapter) recyclerView.getAdapter();
+            albumListAdapter.setDataSource(data);
+            albumListAdapter.notifyDataSetChanged();
         }
     }
 

@@ -15,6 +15,10 @@ import kaaes.spotify.webapi.android.models.Album;
  */
 
 public class AlbumToMyAlbumConverter {
+    private AlbumToMyAlbumConverter() {
+
+    }
+
     public static List<MyAlbum> convertAlbumsToMyAlbums(List<Album> albums) {
         ArrayList<MyAlbum> myAlbums = new ArrayList<>();
         Stream.of(albums).forEach(album -> {
