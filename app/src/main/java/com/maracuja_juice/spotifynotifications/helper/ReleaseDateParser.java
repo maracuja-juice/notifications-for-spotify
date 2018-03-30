@@ -3,8 +3,6 @@ package com.maracuja_juice.spotifynotifications.helper;
 
 import org.joda.time.LocalDate;
 
-import java.util.Arrays;
-
 /**
  * Created by Maurice on 04.03.18.
  */
@@ -22,16 +20,16 @@ public class ReleaseDateParser {
         int year;
         int month;
         int day;
-        if(datePrecision.equals("year")) {
+        if ("year".equals(datePrecision)) {
             year = Integer.parseInt(date);
             month = 1;
             day = 1;
-        } else if(datePrecision.equals("month")) {
+        } else if ("month".equals(datePrecision)) {
             int[] intArray = getIntArray(date);
             year = intArray[0];
             month = intArray[1];
             day = 1;
-        } else if(datePrecision.equals("day")) {
+        } else if ("day".equals(datePrecision)) {
             int[] intArray = getIntArray(date);
             year = intArray[0];
             month = intArray[1];

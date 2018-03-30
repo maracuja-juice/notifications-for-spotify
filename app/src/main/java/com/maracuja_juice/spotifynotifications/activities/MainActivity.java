@@ -46,10 +46,7 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
     private Box<StartupPreferences> startupPreferencesBox;
 
     private FragmentManager fragmentManager;
-
-    private RecyclerView recyclerView;
-    private RecyclerView.Adapter adapter;
-    private RecyclerView.LayoutManager layoutManager;
+    private RecyclerView.Adapter recyclerViewAdapter;
 
     private ProgressBarFragment progressBarFragment;
     private LoginFragment loginFragment;
@@ -173,13 +170,13 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
     }
 
     private void setAdapter(List<MyAlbum> myAlbums) {
-        recyclerView = findViewById(R.id.albumListView);
+        RecyclerView recyclerView = findViewById(R.id.albumListView);
         recyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(this);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        adapter = new AlbumListAdapter(this, myAlbums);
-        recyclerView.setAdapter(adapter);
+        recyclerViewAdapter = new AlbumListAdapter(this, myAlbums);
+        recyclerView.setAdapter(recyclerViewAdapter);
     }
 
     private void updateList(List<MyAlbum> data) {
@@ -187,10 +184,10 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
             progressBarFragment.hideProgressBar();
         }
 
-        if (adapter == null) {
+        if (recyclerViewAdapter == null) {
             setAdapter(data);
         } else {
-            AlbumListAdapter albumListAdapter = (AlbumListAdapter) recyclerView.getAdapter();
+            AlbumListAdapter albumListAdapter = (AlbumListAdapter) recyclerViewAdapter;
             albumListAdapter.setDataSource(data);
             albumListAdapter.notifyDataSetChanged();
         }

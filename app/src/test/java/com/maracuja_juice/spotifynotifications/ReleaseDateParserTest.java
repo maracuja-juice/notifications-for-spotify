@@ -4,7 +4,8 @@ import com.maracuja_juice.spotifynotifications.helper.ReleaseDateParser;
 
 import org.joda.time.LocalDate;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by Maurice on 04.03.18.
@@ -12,7 +13,7 @@ import static org.junit.Assert.*;
 
 public class ReleaseDateParserTest {
     @Test
-    public void parsedReleaseDate_dayPrecision_isCorrect() {
+    public void isDateWithDayPrecisionCorrect() {
         String dateInput = "2017-04-12";
         String datePrecisionInput = "day";
         LocalDate expectedResult = new LocalDate(2017, 4, 12);
@@ -22,7 +23,7 @@ public class ReleaseDateParserTest {
     }
 
     @Test
-    public void parsedReleaseDate_monthPrecision_isCorrect() {
+    public void isDateWithMonthPrecisionCorrect() {
         String dateInput = "2017-03";
         String datePrecisionInput = "month";
         LocalDate expectedResult = new LocalDate(2017, 3, 1);
@@ -32,7 +33,7 @@ public class ReleaseDateParserTest {
     }
 
     @Test
-    public void parsedReleaseDate_yearPrecision_isCorrect() {
+    public void isDateWithYearPrecisionCorrect() {
         String dateInput = "2016";
         String datePrecisionInput = "year";
         LocalDate expectedResult = new LocalDate(2016, 1, 1);

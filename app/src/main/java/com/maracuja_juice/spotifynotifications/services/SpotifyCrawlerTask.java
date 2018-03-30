@@ -18,10 +18,8 @@ import kaaes.spotify.webapi.android.models.Artist;
 
 public class SpotifyCrawlerTask extends AsyncTask<Void, Void, List<Album>> {
 
-    private static final String LOG_TAG = SpotifyCrawlerTask.class.getName();
     @Inject
     SpotifyApi api;
-    private SpotifyService spotify;
     private OnTaskCompleted listener;
 
     private ArtistCrawler artistCrawler;
@@ -31,7 +29,7 @@ public class SpotifyCrawlerTask extends AsyncTask<Void, Void, List<Album>> {
         DaggerSpotifyApiComponent.create().inject(this);
 
         api.setAccessToken(token);
-        spotify = api.getService();
+        SpotifyService spotify = api.getService();
         artistCrawler = new ArtistCrawler(spotify);
         albumCrawler = new AlbumCrawler(spotify);
 
