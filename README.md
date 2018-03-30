@@ -1,5 +1,9 @@
 # Notifications for Spotify
 
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/maracuja-juice/notifications-for-spotify/issues)
+[![Known Vulnerabilities](https://snyk.io/test/github/maracuja-juice/notifications-for-spotify/badge.svg?targetFile=app%2Fbuild.gradle)](https://snyk.io/test/github/maracuja-juice/notifications-for-spotify?targetFile=app%2Fbuild.gradle)
+
+
 ## The Problem
 
 - You can follow artists on Spotify but when they add a new album you don't get notified and therefore don't know that they have a new album. You have to find out yourself i.e. trough a different channel (Twitter, Artist Newsletter, etc.)
