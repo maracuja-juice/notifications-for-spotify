@@ -77,7 +77,7 @@ public class MyAlbum implements Comparable<MyAlbum> {
         return album;
     }
 
-    public void setAlbum(kaaes.spotify.webapi.android.models.Album album) {
+    public void setAlbum(Album album) {
         this.album = album;
     }
 
