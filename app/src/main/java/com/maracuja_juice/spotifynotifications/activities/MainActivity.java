@@ -35,6 +35,7 @@ import io.objectbox.android.AndroidScheduler;
 import io.objectbox.query.Query;
 import kaaes.spotify.webapi.android.models.Album;
 
+import static com.maracuja_juice.spotifynotifications.helper.AlbumListComparer.getAddedAlbums;
 import static com.maracuja_juice.spotifynotifications.helper.AlbumToMyAlbumConverter.convertAlbumsToMyAlbums;
 
 public class MainActivity extends AppCompatActivity implements OnTaskCompleted, LoginListener {
@@ -154,22 +155,18 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
     }
 
     // TODO database actions should be in separate class (or something else)
-    private void saveAlbumsToDatabase(List<Album> allAlbums) {
+    private void saveAlbumsToDatabase(List<Album> downloadedAlbums) {
         getBoxStore().runInTxAsync(() -> {
                     BoxStore store = getBoxStore();
                     Box<MyAlbum> albumBox = store.boxFor(MyAlbum.class);
 
                     List<MyAlbum> savedMyAlbums = albumBox.getAll();
-                    List<Album> albums = new ArrayList<>();
-                    Stream.of(savedMyAlbums).forEach(e -> albums.add(e.getAlbum()));
+                    List<Album> savedAlbums = new ArrayList<>();
+                    Stream.of(savedMyAlbums).forEach(e -> savedAlbums.add(e.getAlbum()));
 
-                    List<Album> newAlbums = Stream.of(allAlbums).filter(downloadedAlbum -> {
-                        boolean albumIsAlreadySaved = Stream.of(albums)
-                                .anyMatch(album -> album.id.equals(downloadedAlbum.id));
-                        return !albumIsAlreadySaved;
-                    }).collect(Collectors.toList());
-
+                    List<Album> newAlbums = getAddedAlbums(downloadedAlbums, savedAlbums);
                     Log.d(LOG_TAG, "there are " + newAlbums.size() + " new albums");
+
                     if(newAlbums.size() > 0) {
                         List<MyAlbum> newMyAlbums = convertAlbumsToMyAlbums(newAlbums);
                         albumBox.put(newMyAlbums);
