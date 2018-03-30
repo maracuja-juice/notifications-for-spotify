@@ -1,5 +1,9 @@
 # Notifications for Spotify
 
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/maracuja-juice/notifications-for-spotify/issues)
+[![Known Vulnerabilities](https://snyk.io/test/github/maracuja-juice/notifications-for-spotify/badge.svg?targetFile=app%2Fbuild.gradle)](https://snyk.io/test/github/maracuja-juice/notifications-for-spotify?targetFile=app%2Fbuild.gradle)
+
+
 ## The Problem
 
 - You can follow artists on Spotify but when they add a new album you don't get notified and therefore don't know that they have a new album. You have to find out yourself i.e. trough a different channel (Twitter, Artist Newsletter, etc.)
@@ -54,16 +58,14 @@ In my case the package name is: `com.maracuja_juice.spotifynotifications`
 4. Add a redirect URI
 (for example: `spotify-notifications-android://callback`)
 
-5. Add a raw folder to your res folder
-6. Add the file `config.properties` to the `res/raw` folder
-7. In the file add the following lines:
+5. Change the file `config.properties` in the `res/raw` folder
+6. In the file replace the following lines:
     ```
    redirectUri={insert your redirect uri that you set in your spotify app}
    clientId={insert client id that you must copy from your spotify app dashboard}
     ```
 
-8. Your good to go.
-9. Have fun.
+7. Have fun.
 
 ## Credits
 
