@@ -61,9 +61,14 @@ public class SpotifyCrawlerTask extends AsyncTask<Void, Void, List<Album>> {
 
     @Override
     protected List<Album> doInBackground(Void... voids) {
-        List<Artist> artists = getFollowedArtists();
-        List<Album> albums = getAlbumsOfAllArtists(artists);
-        return albums;
+        try {
+            List<Artist> artists = getFollowedArtists();
+            List<Album> albums = getAlbumsOfAllArtists(artists);
+            return albums;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override
