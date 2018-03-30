@@ -7,70 +7,117 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import com.maracuja_juice.spotifynotifications.R;
 import com.maracuja_juice.spotifynotifications.adapters.AlbumListAdapter;
 import com.maracuja_juice.spotifynotifications.fragments.LoginFragment;
 import com.maracuja_juice.spotifynotifications.fragments.ProgressBarFragment;
+import com.maracuja_juice.spotifynotifications.interfaces.DownloadCompleted;
 import com.maracuja_juice.spotifynotifications.interfaces.LoginListener;
 import com.maracuja_juice.spotifynotifications.model.LoginResult;
 import com.maracuja_juice.spotifynotifications.model.MyAlbum;
-import com.maracuja_juice.spotifynotifications.services.OnTaskCompleted;
+import com.maracuja_juice.spotifynotifications.model.StartupPreferences;
 import com.maracuja_juice.spotifynotifications.services.SpotifyCrawlerTask;
 
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
+
+import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements OnTaskCompleted, LoginListener {
+import kaaes.spotify.webapi.android.models.Album;
+
+import static com.maracuja_juice.spotifynotifications.database.dao.MyAlbumDao.mergeAndSaveAlbums;
+import static com.maracuja_juice.spotifynotifications.database.dao.MyAlbumDao.subscribeToMyAlbumList;
+import static com.maracuja_juice.spotifynotifications.database.dao.StartupPreferencesDao.getStartupPreferences;
+import static com.maracuja_juice.spotifynotifications.database.dao.StartupPreferencesDao.updateStartupPreferences;
+
+public class MainActivity extends AppCompatActivity implements DownloadCompleted, LoginListener {
 
     private static final String LOG_TAG = MainActivity.class.getName();
-    private boolean isLoggedIn = false;
+
     private String token;
 
     private FragmentManager fragmentManager;
-
-    private RecyclerView recyclerView;
-    private RecyclerView.Adapter adapter;
-    private RecyclerView.LayoutManager layoutManager;
+    private RecyclerView.Adapter recyclerViewAdapter;
 
     private ProgressBarFragment progressBarFragment;
     private LoginFragment loginFragment;
 
-    // TODO: add filter button
+    private StartupPreferences startupPreferences;
+
+    private MenuItem refreshButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        startupInitialization();
+        subscribeToMyAlbumList(this::updateList);
+
+        boolean needToDownload = startupPreferences.needToDownload();
+        boolean needToLogin = startupPreferences.needToLogin();
+        String savedToken = startupPreferences.getToken();
+        if (savedToken != null) {
+            token = savedToken;
+        }
+
+        determineWhatToDoOnStartup(needToDownload, needToLogin);
+    }
+
+    private void startupInitialization() {
         fragmentManager = getSupportFragmentManager();
         progressBarFragment = (ProgressBarFragment) fragmentManager.findFragmentById(R.id.fragmentProgressBar);
+        progressBarFragment.showProgressBar();
+        setAdapter(new ArrayList<>());
 
-        if (!isLoggedIn) {
-            login();
+        Toolbar toolbar = findViewById(R.id.mainActivityToolbar);
+        setSupportActionBar(toolbar);
+
+        startupPreferences = getStartupPreferences();
+    }
+
+    private void updateList(List<MyAlbum> data) {
+        if (progressBarFragment != null) {
+            progressBarFragment.hideProgressBar();
+        }
+
+        if (recyclerViewAdapter == null) {
+            setAdapter(data);
         } else {
-            startSpotifyCrawlerTask();
+            AlbumListAdapter albumListAdapter = (AlbumListAdapter) recyclerViewAdapter;
+            albumListAdapter.setDataSource(data);
+            albumListAdapter.notifyDataSetChanged();
         }
     }
 
-    private void login() {
+    private void determineWhatToDoOnStartup(boolean needToDownload, boolean needToLogin) {
+        if (needToDownload) {
+            if (needToLogin) {
+                Log.d(LOG_TAG, "logging in...");
+                loginAndDownload();
+            } else {
+                download();
+            }
+        }
+    }
+
+    private void loginAndDownload() {
         loginFragment = new LoginFragment();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.add(loginFragment, "login").commitNow();
+        transaction.add(loginFragment, "loginAndDownload").commitNow();
 
         loginFragment.startLogin(this);
     }
 
-    @Override
-    public void loginFinished(LoginResult result) {
-        token = result.getToken();
-        startSpotifyCrawlerTask();
-
-        fragmentManager.beginTransaction().remove(loginFragment).commitNow();
-        loginFragment = null;
-    }
-
-    private void startSpotifyCrawlerTask() {
-        progressBarFragment.showProgressBar();
+    private void download() {
+        Log.d(LOG_TAG, "downloading");
         new SpotifyCrawlerTask(token, this).execute();
     }
 
@@ -78,23 +125,91 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         // Login Finished. This is not really nice but I haven't found a better way.
+        // Because otherwise the loginFragment.onActivityResult doesn't get called
         if (loginFragment != null) {
             loginFragment.onActivityResult(requestCode, resultCode, data);
         }
     }
 
     @Override
-    public void onTaskCompleted(Object result) {
-        progressBarFragment.hideProgressBar();
+    public void loginFinished(LoginResult result) {
+        token = result.getToken();
+        int expiresIn = result.getTokenExpirationIn();
+        saveValuesFromLoginToPreferences(token, expiresIn);
 
-        List<MyAlbum> albums = (List<MyAlbum>) result;
+        download();
 
-        recyclerView = findViewById(R.id.albumListView);
+        fragmentManager.beginTransaction().remove(loginFragment).commitNow();
+        loginFragment = null;
+    }
+
+    private void saveValuesFromLoginToPreferences(String token, int tokenExpiresInSeconds) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime tokenExpiration = now.plusSeconds(tokenExpiresInSeconds);
+
+        startupPreferences.setTokenExpiration(tokenExpiration);
+        startupPreferences.setToken(token);
+        updateStartupPreferences(startupPreferences);
+    }
+
+    @Override
+    public void downloadComplete(List<Album> result) {
+        Log.d(LOG_TAG, "finished downloading");
+        if (progressBarFragment != null) {
+            progressBarFragment.hideProgressBar();
+        }
+        if (refreshButton != null) {
+            refreshButton.setEnabled(true);
+            refreshButton = null;
+        }
+
+        if (result != null) {
+            mergeAndSaveAlbums(result);
+
+            startupPreferences.setLastDownload(LocalDate.now()); // TODO mock or something?
+            updateStartupPreferences(startupPreferences);
+        }
+    }
+
+    private void setAdapter(List<MyAlbum> myAlbums) {
+        RecyclerView recyclerView = findViewById(R.id.albumListView);
         recyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(this);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        adapter = new AlbumListAdapter(this, albums);
-        recyclerView.setAdapter(adapter);
+        recyclerViewAdapter = new AlbumListAdapter(this, myAlbums);
+        recyclerView.setAdapter(recyclerViewAdapter);
     }
+
+    private void hardRefreshItems() {
+        progressBarFragment.showProgressBar();
+
+        startupPreferences = getStartupPreferences();
+        if (startupPreferences.needToLogin()) {
+            loginAndDownload();
+        } else {
+            download();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_mainactivity, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_refresh:
+                hardRefreshItems();
+                item.setEnabled(false);
+                refreshButton = item;
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
 }
