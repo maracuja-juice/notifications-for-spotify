@@ -31,7 +31,7 @@ before_install:
 
 before_script:
   - android list target
-  - echo no | android create avd --force -n test -t android-26 --abi default/x86
+  - echo no | android create avd --force -n test -t android-26 --abi armeabi-v7a
 
 
   - emulator -avd test -no-audio -no-window &
