@@ -2,7 +2,7 @@ package com.maracuja_juice.spotifynotifications;
 
 import android.app.Application;
 
-import com.maracuja_juice.spotifynotifications.database.MyObjectBox;
+import com.maracuja_juice.spotifynotifications.model.MyObjectBox;
 import com.squareup.leakcanary.LeakCanary;
 
 import net.danlew.android.joda.JodaTimeAndroid;
