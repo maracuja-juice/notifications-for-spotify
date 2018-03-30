@@ -2,6 +2,7 @@
 
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/maracuja-juice/notifications-for-spotify/issues)
 [![Known Vulnerabilities](https://snyk.io/test/github/maracuja-juice/notifications-for-spotify/badge.svg?targetFile=app%2Fbuild.gradle)](https://snyk.io/test/github/maracuja-juice/notifications-for-spotify?targetFile=app%2Fbuild.gradle)
+[![Maintainability](https://api.codeclimate.com/v1/badges/65381e37153bb3a39f44/maintainability)](https://codeclimate.com/github/maracuja-juice/notifications-for-spotify/maintainability)
 
 
 ## The Problem
