@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,9 +17,9 @@ import com.maracuja_juice.spotifynotifications.data.MyAlbum;
 import com.maracuja_juice.spotifynotifications.data.StartupPreferences;
 import com.maracuja_juice.spotifynotifications.fragments.LoginFragment;
 import com.maracuja_juice.spotifynotifications.fragments.ProgressBarFragment;
+import com.maracuja_juice.spotifynotifications.interfaces.DownloadCompleted;
 import com.maracuja_juice.spotifynotifications.interfaces.LoginListener;
 import com.maracuja_juice.spotifynotifications.model.LoginResult;
-import com.maracuja_juice.spotifynotifications.services.OnTaskCompleted;
 import com.maracuja_juice.spotifynotifications.services.SpotifyCrawlerTask;
 
 import org.joda.time.LocalDate;
@@ -37,7 +38,7 @@ import static com.maracuja_juice.spotifynotifications.helper.AlbumListComparer.g
 import static com.maracuja_juice.spotifynotifications.helper.AlbumToMyAlbumConverter.convertAlbumsToMyAlbums;
 import static com.maracuja_juice.spotifynotifications.helper.AlbumToMyAlbumConverter.convertMyAlbumsToAlbums;
 
-public class MainActivity extends AppCompatActivity implements OnTaskCompleted, LoginListener {
+public class MainActivity extends AppCompatActivity implements DownloadCompleted, LoginListener {
 
     private static final String LOG_TAG = MainActivity.class.getName();
 
@@ -50,8 +51,11 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
 
     private ProgressBarFragment progressBarFragment;
     private LoginFragment loginFragment;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     private StartupPreferences startupPreferences;
+
+    private boolean isHardRefreshingList = false;
 
     // TODO: add filter button
 
@@ -60,30 +64,50 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        startupInitialization();
+        subscribeToAlbumBoxChanges();
+
+        boolean needToDownload = startupPreferences.needToDownload();
+        boolean needToLogin = startupPreferences.needToLogin();
+        String savedToken = startupPreferences.getToken();
+        if (savedToken != null) {
+            token = savedToken;
+        }
+
+        determineWhatToDoOnStartup(needToDownload, needToLogin);
+    }
+
+    private void startupInitialization() {
         fragmentManager = getSupportFragmentManager();
         progressBarFragment = (ProgressBarFragment) fragmentManager.findFragmentById(R.id.fragmentProgressBar);
         progressBarFragment.showProgressBar();
         setAdapter(new ArrayList<>());
 
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setOnRefreshListener(() -> hardRefreshItems());
+
         startupPreferencesBox = getBoxStore().boxFor(StartupPreferences.class);
         startupPreferences = getStartupPreferences();
+    }
 
+    private void subscribeToAlbumBoxChanges() {
         Box<MyAlbum> myAlbumBox = getBoxStore().boxFor(MyAlbum.class);
         Query<MyAlbum> query = myAlbumBox.query().build();
         query.subscribe().on(AndroidScheduler.mainThread()).observer(data -> updateList(data));
+    }
 
-        boolean needToDownload = true;
-        boolean needToLogin = true;
-        if (startupPreferences != null) {
-            // TODO: mock this datetime or something? Or somehow else make it adjustable for tests
-            needToLogin = startupPreferences.needToLogin(LocalDateTime.now());
-            needToDownload = startupPreferences.needToDownload(LocalDate.now());
-            token = startupPreferences.getToken();
-        } else {
-            startupPreferences = new StartupPreferences();
+    private void updateList(List<MyAlbum> data) {
+        if (progressBarFragment != null) {
+            progressBarFragment.hideProgressBar();
         }
 
-        determineWhatToDoOnStartup(needToDownload, needToLogin);
+        if (recyclerViewAdapter == null) {
+            setAdapter(data);
+        } else {
+            AlbumListAdapter albumListAdapter = (AlbumListAdapter) recyclerViewAdapter;
+            albumListAdapter.setDataSource(data);
+            albumListAdapter.notifyDataSetChanged();
+        }
     }
 
     private void determineWhatToDoOnStartup(boolean needToDownload, boolean needToLogin) {
@@ -103,6 +127,11 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
         transaction.add(loginFragment, "loginAndDownload").commitNow();
 
         loginFragment.startLogin(this);
+    }
+
+    private void download() {
+        Log.d(LOG_TAG, "downloading");
+        new SpotifyCrawlerTask(token, this).execute();
     }
 
     @Override
@@ -136,19 +165,18 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
         startupPreferencesBox.put(startupPreferences);
     }
 
-    private void download() {
-        Log.d(LOG_TAG, "downloading");
-        new SpotifyCrawlerTask(token, this).execute();
-    }
-
     @Override
-    public void onTaskCompleted(Object result) {
+    public void downloadComplete(List<Album> result) {
         Log.d(LOG_TAG, "finished downloading");
 
-        saveAlbumsToDatabase((List<Album>) result);
+        saveAlbumsToDatabase(result);
 
         startupPreferences.setLastDownload(LocalDate.now()); // TODO
         startupPreferencesBox.put(startupPreferences);
+
+        if (isHardRefreshingList) {
+            swipeRefreshLayout.setRefreshing(false);
+        }
     }
 
     // TODO database actions should be in separate class (or something else)
@@ -179,25 +207,13 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
         recyclerView.setAdapter(recyclerViewAdapter);
     }
 
-    private void updateList(List<MyAlbum> data) {
-        if (progressBarFragment != null) {
-            progressBarFragment.hideProgressBar();
-        }
-
-        if (recyclerViewAdapter == null) {
-            setAdapter(data);
-        } else {
-            AlbumListAdapter albumListAdapter = (AlbumListAdapter) recyclerViewAdapter;
-            albumListAdapter.setDataSource(data);
-            albumListAdapter.notifyDataSetChanged();
-        }
-    }
-
     private StartupPreferences getStartupPreferences() {
         List<StartupPreferences> allPreferences = startupPreferencesBox.getAll();
-        StartupPreferences preferences = null;
+        StartupPreferences preferences;
         if (allPreferences.size() != 0) {
             preferences = allPreferences.get(0);
+        } else {
+            preferences = new StartupPreferences();
         }
         return preferences;
     }
@@ -206,4 +222,14 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
         return ((SpotifyNotificationsApplication) getApplication()).getBoxStore();
     }
 
+    private void hardRefreshItems() {
+        isHardRefreshingList = true;
+
+        startupPreferences = getStartupPreferences();
+        if (startupPreferences.needToLogin()) {
+            loginAndDownload();
+        } else {
+            download();
+        }
+    }
 }

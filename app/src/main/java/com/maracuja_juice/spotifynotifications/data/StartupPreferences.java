@@ -38,12 +38,18 @@ public class StartupPreferences {
         this.lastDownload = lastDownload;
     }
 
+    public boolean needToDownload() {
+        // TODO: mock this datetime or something? Or somehow else make it adjustable for tests
+        return needToDownload(LocalDate.now());
+    }
+
     public boolean needToDownload(LocalDate threshold) {
         return lastDownload == null || threshold.isAfter(lastDownload);
     }
 
-    public boolean needToLogin(LocalDateTime now) {
-        return tokenExpiration == null || now.isAfter(tokenExpiration);
+    public boolean needToLogin() {
+        // TODO: mock this datetime or something? Or somehow else make it adjustable for tests
+        return tokenExpiration == null || LocalDateTime.now().isAfter(tokenExpiration);
     }
 
     // Get and Set

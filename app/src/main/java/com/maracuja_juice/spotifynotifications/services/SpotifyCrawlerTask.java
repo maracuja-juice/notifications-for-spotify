@@ -5,6 +5,7 @@ import android.os.Build;
 
 import com.annimon.stream.Stream;
 import com.maracuja_juice.spotifynotifications.di.DaggerSpotifyApiComponent;
+import com.maracuja_juice.spotifynotifications.interfaces.DownloadCompleted;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,12 +21,12 @@ public class SpotifyCrawlerTask extends AsyncTask<Void, Void, List<Album>> {
 
     @Inject
     SpotifyApi api;
-    private OnTaskCompleted listener;
+    private DownloadCompleted listener;
 
     private ArtistCrawler artistCrawler;
     private AlbumCrawler albumCrawler;
 
-    public SpotifyCrawlerTask(String token, OnTaskCompleted listener) {
+    public SpotifyCrawlerTask(String token, DownloadCompleted listener) {
         DaggerSpotifyApiComponent.create().inject(this);
 
         api.setAccessToken(token);
@@ -68,6 +69,6 @@ public class SpotifyCrawlerTask extends AsyncTask<Void, Void, List<Album>> {
     @Override
     protected void onPostExecute(List<Album> s) {
         super.onPostExecute(s);
-        listener.onTaskCompleted(s);
+        listener.downloadComplete(s);
     }
 }
