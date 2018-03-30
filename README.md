@@ -58,16 +58,14 @@ In my case the package name is: `com.maracuja_juice.spotifynotifications`
 4. Add a redirect URI
 (for example: `spotify-notifications-android://callback`)
 
-5. Add a raw folder to your res folder
-6. Add the file `config.properties` to the `res/raw` folder
-7. In the file add the following lines:
+5. Change the file `config.properties` in the `res/raw` folder
+6. In the file replace the following lines:
     ```
    redirectUri={insert your redirect uri that you set in your spotify app}
    clientId={insert client id that you must copy from your spotify app dashboard}
     ```
 
-8. Your good to go.
-9. Have fun.
+7. Have fun.
 
 ## Credits
 
