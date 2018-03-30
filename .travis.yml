@@ -21,18 +21,18 @@ android:
     # Additional components
     - extra-google-m2repository
     - extra-android-m2repository
-    - addon-google_apis-google-26
+    - extra-android-support
 
     # Specify at least one system image,
     # if you need to run emulator(s) during your tests
-    - sys-img-armeabi-v7a-android-22
+    - sys-img-armeabi-v7a-google_apis-26
+
 before_install:
 - chmod +x gradlew
 
 before_script:
   - android list target
-  - echo no | android create avd --force -n test -t android-26 --abi armeabi-v7a
-
+  - echo no | android create avd --force -n test -t android-26 --abi google_apis/armeabi-v7a --tag google_apis
 
   - emulator -avd test -no-audio -no-window &
   - android-wait-for-emulator
