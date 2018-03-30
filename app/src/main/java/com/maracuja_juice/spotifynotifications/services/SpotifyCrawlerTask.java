@@ -4,11 +4,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 
 import com.annimon.stream.Stream;
-import com.maracuja_juice.spotifynotifications.data.MyAlbum;
 import com.maracuja_juice.spotifynotifications.di.DaggerSpotifyApiComponent;
-import com.maracuja_juice.spotifynotifications.helper.ReleaseDateParser;
-
-import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +16,7 @@ import kaaes.spotify.webapi.android.SpotifyService;
 import kaaes.spotify.webapi.android.models.Album;
 import kaaes.spotify.webapi.android.models.Artist;
 
-public class SpotifyCrawlerTask extends AsyncTask<Void, Void, List<MyAlbum>> {
+public class SpotifyCrawlerTask extends AsyncTask<Void, Void, List<Album>> {
 
     private static final String LOG_TAG = SpotifyCrawlerTask.class.getName();
     @Inject
@@ -50,14 +46,12 @@ public class SpotifyCrawlerTask extends AsyncTask<Void, Void, List<MyAlbum>> {
         ArrayList<Album> albums = new ArrayList<>();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            artists.parallelStream().forEach(artist -> {
-                albums.addAll(getAlbumsOfSingleArtist(artist));
-            });
+            artists.parallelStream()
+                    .forEach(artist -> albums.addAll(getAlbumsOfSingleArtist(artist)));
         } else {
             // backwards compatible streams api via library
-            Stream.of(artists).forEach((artist) -> {
-                albums.addAll(getAlbumsOfSingleArtist(artist));
-            });
+            Stream.of(artists)
+                    .forEach((artist) -> albums.addAll(getAlbumsOfSingleArtist(artist)));
         }
         return albums;
     }
@@ -66,28 +60,15 @@ public class SpotifyCrawlerTask extends AsyncTask<Void, Void, List<MyAlbum>> {
         return albumCrawler.getAlbumsOfArtist(artist);
     }
 
-    private List<MyAlbum> convertAlbumsToMyAlbums(List<Album> albums) {
-        ArrayList<MyAlbum> myAlbums = new ArrayList<>();
-        Stream.of(albums).forEach(album -> {
-            LocalDate releaseDate = ReleaseDateParser.parseReleaseDate(
-                    album.release_date,
-                    album.release_date_precision);
-            MyAlbum myAlbum = new MyAlbum(album, releaseDate);
-            myAlbums.add(myAlbum);
-        });
-        return myAlbums;
-    }
-
     @Override
-    protected List<MyAlbum> doInBackground(Void... voids) {
+    protected List<Album> doInBackground(Void... voids) {
         List<Artist> artists = getFollowedArtists();
         List<Album> albums = getAlbumsOfAllArtists(artists);
-        List<MyAlbum> myAlbums = convertAlbumsToMyAlbums(albums);
-        return myAlbums;
+        return albums;
     }
 
     @Override
-    protected void onPostExecute(List<MyAlbum> s) {
+    protected void onPostExecute(List<Album> s) {
         super.onPostExecute(s);
         listener.onTaskCompleted(s);
     }
