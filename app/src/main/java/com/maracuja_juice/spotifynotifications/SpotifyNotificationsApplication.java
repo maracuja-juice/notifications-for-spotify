@@ -2,7 +2,7 @@ package com.maracuja_juice.spotifynotifications;
 
 import android.app.Application;
 
-import com.maracuja_juice.spotifynotifications.data.MyObjectBox;
+import com.maracuja_juice.spotifynotifications.database.MyObjectBox;
 import com.squareup.leakcanary.LeakCanary;
 
 import net.danlew.android.joda.JodaTimeAndroid;
@@ -14,7 +14,7 @@ import io.objectbox.BoxStore;
  */
 
 public class SpotifyNotificationsApplication extends Application {
-    private BoxStore boxStore;
+    private static BoxStore boxStore;
 
     @Override
     public void onCreate() {
@@ -30,7 +30,7 @@ public class SpotifyNotificationsApplication extends Application {
         boxStore = MyObjectBox.builder().androidContext(SpotifyNotificationsApplication.this).build();
     }
 
-    public BoxStore getBoxStore() {
+    public static BoxStore getBoxStore() {
         return boxStore;
     }
 }

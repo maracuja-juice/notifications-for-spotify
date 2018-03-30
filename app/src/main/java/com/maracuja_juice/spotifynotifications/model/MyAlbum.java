@@ -1,9 +1,9 @@
-package com.maracuja_juice.spotifynotifications.data;
+package com.maracuja_juice.spotifynotifications.model;
 
 import android.support.annotation.NonNull;
 
-import com.maracuja_juice.spotifynotifications.data.converter.AlbumConverter;
-import com.maracuja_juice.spotifynotifications.data.converter.LocalDateConverter;
+import com.maracuja_juice.spotifynotifications.database.converter.AlbumConverter;
+import com.maracuja_juice.spotifynotifications.database.converter.LocalDateConverter;
 
 import org.joda.time.LocalDate;
 

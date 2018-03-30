@@ -1,4 +1,4 @@
-package com.maracuja_juice.spotifynotifications.data.converter;
+package com.maracuja_juice.spotifynotifications.database.converter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

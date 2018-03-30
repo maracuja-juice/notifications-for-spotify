@@ -14,15 +14,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.maracuja_juice.spotifynotifications.R;
-import com.maracuja_juice.spotifynotifications.SpotifyNotificationsApplication;
 import com.maracuja_juice.spotifynotifications.adapters.AlbumListAdapter;
-import com.maracuja_juice.spotifynotifications.data.MyAlbum;
-import com.maracuja_juice.spotifynotifications.data.StartupPreferences;
 import com.maracuja_juice.spotifynotifications.fragments.LoginFragment;
 import com.maracuja_juice.spotifynotifications.fragments.ProgressBarFragment;
 import com.maracuja_juice.spotifynotifications.interfaces.DownloadCompleted;
 import com.maracuja_juice.spotifynotifications.interfaces.LoginListener;
 import com.maracuja_juice.spotifynotifications.model.LoginResult;
+import com.maracuja_juice.spotifynotifications.model.MyAlbum;
+import com.maracuja_juice.spotifynotifications.model.StartupPreferences;
 import com.maracuja_juice.spotifynotifications.services.SpotifyCrawlerTask;
 
 import org.joda.time.LocalDate;
@@ -31,23 +30,18 @@ import org.joda.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.objectbox.Box;
-import io.objectbox.BoxStore;
-import io.objectbox.android.AndroidScheduler;
-import io.objectbox.query.Query;
 import kaaes.spotify.webapi.android.models.Album;
 
-import static com.maracuja_juice.spotifynotifications.helper.AlbumListComparer.getNewAlbums;
-import static com.maracuja_juice.spotifynotifications.helper.AlbumToMyAlbumConverter.convertAlbumsToMyAlbums;
-import static com.maracuja_juice.spotifynotifications.helper.AlbumToMyAlbumConverter.convertMyAlbumsToAlbums;
+import static com.maracuja_juice.spotifynotifications.database.dao.MyAlbumDao.mergeAndSaveAlbums;
+import static com.maracuja_juice.spotifynotifications.database.dao.MyAlbumDao.subscribeToMyAlbumList;
+import static com.maracuja_juice.spotifynotifications.database.dao.StartupPreferencesDao.getStartupPreferences;
+import static com.maracuja_juice.spotifynotifications.database.dao.StartupPreferencesDao.updateStartupPreferences;
 
 public class MainActivity extends AppCompatActivity implements DownloadCompleted, LoginListener {
 
     private static final String LOG_TAG = MainActivity.class.getName();
 
     private String token;
-
-    private Box<StartupPreferences> startupPreferencesBox;
 
     private FragmentManager fragmentManager;
     private RecyclerView.Adapter recyclerViewAdapter;
@@ -65,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements DownloadCompleted
         setContentView(R.layout.activity_main);
 
         startupInitialization();
-        subscribeToAlbumBoxChanges();
+        subscribeToMyAlbumList(this::updateList);
 
         boolean needToDownload = startupPreferences.needToDownload();
         boolean needToLogin = startupPreferences.needToLogin();
@@ -86,14 +80,7 @@ public class MainActivity extends AppCompatActivity implements DownloadCompleted
         Toolbar toolbar = findViewById(R.id.mainActivityToolbar);
         setSupportActionBar(toolbar);
 
-        startupPreferencesBox = getBoxStore().boxFor(StartupPreferences.class);
         startupPreferences = getStartupPreferences();
-    }
-
-    private void subscribeToAlbumBoxChanges() {
-        Box<MyAlbum> myAlbumBox = getBoxStore().boxFor(MyAlbum.class);
-        Query<MyAlbum> query = myAlbumBox.query().build();
-        query.subscribe().on(AndroidScheduler.mainThread()).observer(data -> updateList(data));
     }
 
     private void updateList(List<MyAlbum> data) {
@@ -162,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements DownloadCompleted
 
         startupPreferences.setTokenExpiration(tokenExpiration);
         startupPreferences.setToken(token);
-        startupPreferencesBox.put(startupPreferences);
+        updateStartupPreferences(startupPreferences);
     }
 
     @Override
@@ -176,31 +163,12 @@ public class MainActivity extends AppCompatActivity implements DownloadCompleted
             refreshButton = null;
         }
 
-        // TODO: is this the right error handling?
         if (result != null) {
-            saveAlbumsToDatabase(result);
+            mergeAndSaveAlbums(result);
 
             startupPreferences.setLastDownload(LocalDate.now()); // TODO mock or something?
-            startupPreferencesBox.put(startupPreferences);
+            updateStartupPreferences(startupPreferences);
         }
-    }
-
-    // TODO database actions should be in separate class (or something else)
-    private void saveAlbumsToDatabase(List<Album> downloadedAlbums) {
-        getBoxStore().runInTxAsync(() -> {
-            Box<MyAlbum> albumBox = getBoxStore().boxFor(MyAlbum.class);
-
-                    List<MyAlbum> savedMyAlbums = albumBox.getAll();
-            List<Album> savedAlbums = convertMyAlbumsToAlbums(savedMyAlbums);
-
-            List<Album> newAlbums = getNewAlbums(downloadedAlbums, savedAlbums);
-                    Log.d(LOG_TAG, "there are " + newAlbums.size() + " new albums");
-            if (newAlbums.size() > 0) {
-                        List<MyAlbum> newMyAlbums = convertAlbumsToMyAlbums(newAlbums);
-                        albumBox.put(newMyAlbums);
-                    }
-                }, null
-        );
     }
 
     private void setAdapter(List<MyAlbum> myAlbums) {
@@ -211,21 +179,6 @@ public class MainActivity extends AppCompatActivity implements DownloadCompleted
 
         recyclerViewAdapter = new AlbumListAdapter(this, myAlbums);
         recyclerView.setAdapter(recyclerViewAdapter);
-    }
-
-    private StartupPreferences getStartupPreferences() {
-        List<StartupPreferences> allPreferences = startupPreferencesBox.getAll();
-        StartupPreferences preferences;
-        if (allPreferences.size() != 0) {
-            preferences = allPreferences.get(0);
-        } else {
-            preferences = new StartupPreferences();
-        }
-        return preferences;
-    }
-
-    private BoxStore getBoxStore() {
-        return ((SpotifyNotificationsApplication) getApplication()).getBoxStore();
     }
 
     private void hardRefreshItems() {
@@ -256,7 +209,6 @@ public class MainActivity extends AppCompatActivity implements DownloadCompleted
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
-
         }
     }
 

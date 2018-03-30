@@ -1,4 +1,4 @@
-package com.maracuja_juice.spotifynotifications.data.converter;
+package com.maracuja_juice.spotifynotifications.database.converter;
 
 import org.joda.time.LocalDateTime;
 

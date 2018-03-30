@@ -1,7 +1,7 @@
 package com.maracuja_juice.spotifynotifications.helper;
 
 import com.annimon.stream.Stream;
-import com.maracuja_juice.spotifynotifications.data.MyAlbum;
+import com.maracuja_juice.spotifynotifications.model.MyAlbum;
 
 import org.joda.time.LocalDate;
 
