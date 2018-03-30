@@ -176,6 +176,7 @@ public class MainActivity extends AppCompatActivity implements DownloadCompleted
 
         if (isHardRefreshingList) {
             swipeRefreshLayout.setRefreshing(false);
+            isHardRefreshingList = false;
         }
     }
 
