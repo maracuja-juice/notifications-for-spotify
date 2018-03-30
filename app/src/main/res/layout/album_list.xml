@@ -18,14 +18,17 @@
         android:contentDescription="@string/thumbnail"
         android:cropToPadding="false"
         android:scaleType="centerInside"
-        tools:src="@mipmap/ic_launcher" />
+        tools:src="@mipmap/ic_launcher"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="4dp" />
 
     <RelativeLayout
         android:id="@+id/album_list_text_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/album_list_album_art"
-        android:layout_toEndOf="@+id/album_list_album_art">
+        android:layout_toEndOf="@+id/album_list_album_art"
+        android:layout_toRightOf="@+id/album_list_album_art">
 
         <TextView
             android:id="@+id/album_list_title"

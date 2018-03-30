@@ -1,10 +1,12 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/accent</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
 
     <integer name="min_sweep_angle">0</integer>
@@ -30,7 +32,7 @@
     <style name="fastScrollbar" >
         <item name="handleColor">@color/primary</item>
         <item name="trackColor">@color/background_white</item>
-        <item name="hideScrollbar">true</item>
+        <item name="hideScrollbar">false</item>
         <item name="showTrack">false</item>
     </style>
 </resources>

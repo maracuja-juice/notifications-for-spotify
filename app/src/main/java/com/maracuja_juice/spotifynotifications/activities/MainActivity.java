@@ -4,11 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import com.maracuja_juice.spotifynotifications.R;
 import com.maracuja_juice.spotifynotifications.SpotifyNotificationsApplication;
@@ -51,13 +54,10 @@ public class MainActivity extends AppCompatActivity implements DownloadCompleted
 
     private ProgressBarFragment progressBarFragment;
     private LoginFragment loginFragment;
-    private SwipeRefreshLayout swipeRefreshLayout;
 
     private StartupPreferences startupPreferences;
 
-    private boolean isHardRefreshingList = false;
-
-    // TODO: add filter button
+    private MenuItem refreshButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,8 +83,8 @@ public class MainActivity extends AppCompatActivity implements DownloadCompleted
         progressBarFragment.showProgressBar();
         setAdapter(new ArrayList<>());
 
-        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
-        swipeRefreshLayout.setOnRefreshListener(() -> hardRefreshItems());
+        Toolbar toolbar = findViewById(R.id.mainActivityToolbar);
+        setSupportActionBar(toolbar);
 
         startupPreferencesBox = getBoxStore().boxFor(StartupPreferences.class);
         startupPreferences = getStartupPreferences();
@@ -168,15 +168,20 @@ public class MainActivity extends AppCompatActivity implements DownloadCompleted
     @Override
     public void downloadComplete(List<Album> result) {
         Log.d(LOG_TAG, "finished downloading");
+        if (progressBarFragment != null) {
+            progressBarFragment.hideProgressBar();
+        }
+        if (refreshButton != null) {
+            refreshButton.setEnabled(true);
+            refreshButton = null;
+        }
 
-        saveAlbumsToDatabase(result);
+        // TODO: is this the right error handling?
+        if (result != null) {
+            saveAlbumsToDatabase(result);
 
-        startupPreferences.setLastDownload(LocalDate.now()); // TODO
-        startupPreferencesBox.put(startupPreferences);
-
-        if (isHardRefreshingList) {
-            swipeRefreshLayout.setRefreshing(false);
-            isHardRefreshingList = false;
+            startupPreferences.setLastDownload(LocalDate.now()); // TODO mock or something?
+            startupPreferencesBox.put(startupPreferences);
         }
     }
 
@@ -224,7 +229,7 @@ public class MainActivity extends AppCompatActivity implements DownloadCompleted
     }
 
     private void hardRefreshItems() {
-        isHardRefreshingList = true;
+        progressBarFragment.showProgressBar();
 
         startupPreferences = getStartupPreferences();
         if (startupPreferences.needToLogin()) {
@@ -233,4 +238,26 @@ public class MainActivity extends AppCompatActivity implements DownloadCompleted
             download();
         }
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_mainactivity, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_refresh:
+                hardRefreshItems();
+                item.setEnabled(false);
+                refreshButton = item;
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
+    }
+
 }
