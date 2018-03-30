@@ -26,4 +26,10 @@ public class AlbumToMyAlbumConverter {
         });
         return myAlbums;
     }
+
+    public static List<Album> convertMyAlbumsToAlbums(List<MyAlbum> myAlbums) {
+        List<Album> albums = new ArrayList<>();
+        Stream.of(myAlbums).forEach(e -> albums.add(e.getAlbum()));
+        return albums;
+    }
 }

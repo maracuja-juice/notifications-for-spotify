@@ -9,8 +9,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
-import com.annimon.stream.Collectors;
-import com.annimon.stream.Stream;
 import com.maracuja_juice.spotifynotifications.R;
 import com.maracuja_juice.spotifynotifications.SpotifyNotificationsApplication;
 import com.maracuja_juice.spotifynotifications.adapters.AlbumListAdapter;
@@ -35,8 +33,9 @@ import io.objectbox.android.AndroidScheduler;
 import io.objectbox.query.Query;
 import kaaes.spotify.webapi.android.models.Album;
 
-import static com.maracuja_juice.spotifynotifications.helper.AlbumListComparer.getAddedAlbums;
+import static com.maracuja_juice.spotifynotifications.helper.AlbumListComparer.getNewAlbums;
 import static com.maracuja_juice.spotifynotifications.helper.AlbumToMyAlbumConverter.convertAlbumsToMyAlbums;
+import static com.maracuja_juice.spotifynotifications.helper.AlbumToMyAlbumConverter.convertMyAlbumsToAlbums;
 
 public class MainActivity extends AppCompatActivity implements OnTaskCompleted, LoginListener {
 
@@ -76,9 +75,8 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
         Query<MyAlbum> query = myAlbumBox.query().build();
         query.subscribe().on(AndroidScheduler.mainThread()).observer(data -> updateList(data));
 
-        // TODO separate method
-        boolean needToLogin = true;
         boolean needToDownload = true;
+        boolean needToLogin = true;
         if (startupPreferences != null) {
             // TODO: mock this datetime or something? Or somehow else make it adjustable for tests
             needToLogin = startupPreferences.needToLogin(LocalDateTime.now());
@@ -88,58 +86,61 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
             startupPreferences = new StartupPreferences();
         }
 
-        // TODO separate method
+        determineWhatToDoOnStartup(needToDownload, needToLogin);
+    }
+
+    private void determineWhatToDoOnStartup(boolean needToDownload, boolean needToLogin) {
         if (needToDownload) {
             if (needToLogin) {
                 Log.d(LOG_TAG, "logging in...");
-                login();
+                loginAndDownload();
             } else {
-                startSpotifyCrawlerTask();
+                download();
             }
         }
     }
 
-    private void login() {
+    private void loginAndDownload() {
         loginFragment = new LoginFragment();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.add(loginFragment, "login").commitNow();
+        transaction.add(loginFragment, "loginAndDownload").commitNow();
 
         loginFragment.startLogin(this);
-    }
-
-    @Override
-    public void loginFinished(LoginResult result) {
-        String token = result.getToken();
-        int expiresIn = result.getTokenExpirationIn();
-
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime tokenExpiration = now.plusSeconds(expiresIn);
-        saveValuesFromLoginToPreferences(token, tokenExpiration);
-
-        startSpotifyCrawlerTask();
-
-        fragmentManager.beginTransaction().remove(loginFragment).commitNow();
-        loginFragment = null;
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         // Login Finished. This is not really nice but I haven't found a better way.
+        // Because otherwise the loginFragment.onActivityResult doesn't get called
         if (loginFragment != null) {
             loginFragment.onActivityResult(requestCode, resultCode, data);
         }
     }
 
-    private void saveValuesFromLoginToPreferences(String token, LocalDateTime tokenExpiration) {
-        this.token = token;
+    @Override
+    public void loginFinished(LoginResult result) {
+        String token = result.getToken();
+        int expiresIn = result.getTokenExpirationIn();
+        saveValuesFromLoginToPreferences(token, expiresIn);
 
+        download();
+
+        fragmentManager.beginTransaction().remove(loginFragment).commitNow();
+        loginFragment = null;
+    }
+
+    private void saveValuesFromLoginToPreferences(String token, int tokenExpiresInSeconds) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime tokenExpiration = now.plusSeconds(tokenExpiresInSeconds);
+
+        this.token = token;
         startupPreferences.setTokenExpiration(tokenExpiration);
         startupPreferences.setToken(token);
         startupPreferencesBox.put(startupPreferences);
     }
 
-    private void startSpotifyCrawlerTask() {
+    private void download() {
         Log.d(LOG_TAG, "downloading");
         new SpotifyCrawlerTask(token, this).execute();
     }
@@ -157,17 +158,14 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
     // TODO database actions should be in separate class (or something else)
     private void saveAlbumsToDatabase(List<Album> downloadedAlbums) {
         getBoxStore().runInTxAsync(() -> {
-                    BoxStore store = getBoxStore();
-                    Box<MyAlbum> albumBox = store.boxFor(MyAlbum.class);
+            Box<MyAlbum> albumBox = getBoxStore().boxFor(MyAlbum.class);
 
                     List<MyAlbum> savedMyAlbums = albumBox.getAll();
-                    List<Album> savedAlbums = new ArrayList<>();
-                    Stream.of(savedMyAlbums).forEach(e -> savedAlbums.add(e.getAlbum()));
+            List<Album> savedAlbums = convertMyAlbumsToAlbums(savedMyAlbums);
 
-                    List<Album> newAlbums = getAddedAlbums(downloadedAlbums, savedAlbums);
+            List<Album> newAlbums = getNewAlbums(downloadedAlbums, savedAlbums);
                     Log.d(LOG_TAG, "there are " + newAlbums.size() + " new albums");
-
-                    if(newAlbums.size() > 0) {
+            if (newAlbums.size() > 0) {
                         List<MyAlbum> newMyAlbums = convertAlbumsToMyAlbums(newAlbums);
                         albumBox.put(newMyAlbums);
                     }
@@ -186,11 +184,11 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
     }
 
     private void updateList(List<MyAlbum> data) {
-        if(progressBarFragment != null) {
+        if (progressBarFragment != null) {
             progressBarFragment.hideProgressBar();
         }
 
-        if(adapter == null) {
+        if (adapter == null) {
             setAdapter(data);
         } else {
             AlbumListAdapter adapter = (AlbumListAdapter) recyclerView.getAdapter();
@@ -206,7 +204,7 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
             preferences = allPreferences.get(0);
         }
         return preferences;
-}
+    }
 
     private BoxStore getBoxStore() {
         return ((SpotifyNotificationsApplication) getApplication()).getBoxStore();
