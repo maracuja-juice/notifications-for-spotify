@@ -44,9 +44,9 @@ dependencies {
     compile 'com.annimon:stream:1.1.9'
     apply plugin: 'io.objectbox'
     // JSON
-    compile 'com.fasterxml.jackson.core:jackson-core:2.9.4'
-    compile 'com.fasterxml.jackson.core:jackson-annotations:2.9.4'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.9.4'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.9.5'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.9.5'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.9.5'
     // UI
     compile 'com.l4digital.fastscroll:fastscroll:1.0.4'
     compile 'com.github.castorflex.smoothprogressbar:library-circular:1.1.0'
