@@ -17,11 +17,15 @@ public class AlbumListComparer {
     }
 
     public static List<Album> getNewAlbums(List<Album> downloadedAlbums, List<Album> savedAlbums) {
-        List<Album> newAlbums = Stream.of(downloadedAlbums).filter(downloadedAlbum -> {
-            boolean albumIsAlreadySaved = Stream.of(savedAlbums)
-                    .anyMatch(album -> album.id.equals(downloadedAlbum.id));
-            return !albumIsAlreadySaved;
-        }).collect(Collectors.toList());
+        List<Album> newAlbums = Stream.of(downloadedAlbums)
+                .filter(downloadedAlbum -> isThereAMatch(savedAlbums, downloadedAlbum))
+                .collect(Collectors.toList());
         return newAlbums;
+    }
+
+    private static boolean isThereAMatch(List<Album> savedAlbums, Album downloadedAlbum) {
+        boolean albumIsAlreadySaved = Stream.of(savedAlbums)
+                .anyMatch(album -> album.id.equals(downloadedAlbum.id));
+        return !albumIsAlreadySaved;
     }
 }
