@@ -9,6 +9,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
+import com.annimon.stream.Collectors;
+import com.annimon.stream.Stream;
 import com.maracuja_juice.spotifynotifications.R;
 import com.maracuja_juice.spotifynotifications.SpotifyNotificationsApplication;
 import com.maracuja_juice.spotifynotifications.adapters.AlbumListAdapter;
@@ -31,6 +33,9 @@ import io.objectbox.Box;
 import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.query.Query;
+import kaaes.spotify.webapi.android.models.Album;
+
+import static com.maracuja_juice.spotifynotifications.helper.AlbumToMyAlbumConverter.convertAlbumsToMyAlbums;
 
 public class MainActivity extends AppCompatActivity implements OnTaskCompleted, LoginListener {
 
@@ -76,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
         if (startupPreferences != null) {
             // TODO: mock this datetime or something? Or somehow else make it adjustable for tests
             needToLogin = startupPreferences.needToLogin(LocalDateTime.now());
-            needToDownload = startupPreferences.needToDownload(LocalDate.now().minusDays(1));
+            needToDownload = startupPreferences.needToDownload(LocalDate.now());
             token = startupPreferences.getToken();
         } else {
             startupPreferences = new StartupPreferences();
@@ -142,20 +147,33 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
     public void onTaskCompleted(Object result) {
         Log.d(LOG_TAG, "finished downloading");
 
-        saveAlbumsToDatabase((List<MyAlbum>) result);
+        saveAlbumsToDatabase((List<Album>) result);
 
-        startupPreferences.setLastDownload(LocalDate.now());
+        startupPreferences.setLastDownload(LocalDate.now()); // TODO
         startupPreferencesBox.put(startupPreferences);
     }
 
     // TODO database actions should be in separate class (or something else)
-    private void saveAlbumsToDatabase(List<MyAlbum> myAlbums) {
+    private void saveAlbumsToDatabase(List<Album> allAlbums) {
         getBoxStore().runInTxAsync(() -> {
                     BoxStore store = getBoxStore();
                     Box<MyAlbum> albumBox = store.boxFor(MyAlbum.class);
-                    // TODO don't save twice -> merge!
-                    albumBox.removeAll();
-                    albumBox.put(myAlbums);
+
+                    List<MyAlbum> savedMyAlbums = albumBox.getAll();
+                    List<Album> albums = new ArrayList<>();
+                    Stream.of(savedMyAlbums).forEach(e -> albums.add(e.getAlbum()));
+
+                    List<Album> newAlbums = Stream.of(allAlbums).filter(downloadedAlbum -> {
+                        boolean albumIsAlreadySaved = Stream.of(albums)
+                                .anyMatch(album -> album.id.equals(downloadedAlbum.id));
+                        return !albumIsAlreadySaved;
+                    }).collect(Collectors.toList());
+
+                    Log.d(LOG_TAG, "there are " + newAlbums.size() + " new albums");
+                    if(newAlbums.size() > 0) {
+                        List<MyAlbum> newMyAlbums = convertAlbumsToMyAlbums(newAlbums);
+                        albumBox.put(newMyAlbums);
+                    }
                 }, null
         );
     }
