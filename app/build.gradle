@@ -39,22 +39,22 @@ dependencies {
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
 
     // Util
-    compile 'com.spotify.android:auth:1.0.0-alpha'
-    compile 'com.github.kaaes:spotify-web-api-android:0.4.1'
-    compile 'net.danlew:android.joda:2.9.9.2'
-    compile 'com.annimon:stream:1.1.9'
+    implementation 'com.spotify.android:auth:1.0.0-alpha'
+    implementation 'com.github.kaaes:spotify-web-api-android:0.4.1'
+    implementation 'net.danlew:android.joda:2.9.9.2'
+    implementation 'com.annimon:stream:1.1.9'
     apply plugin: 'io.objectbox'
     // JSON
-    compile 'com.fasterxml.jackson.core:jackson-core:2.9.5'
-    compile 'com.fasterxml.jackson.core:jackson-annotations:2.9.5'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.9.5'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.9.5'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.9.5'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.5'
     // UI
-    compile 'com.l4digital.fastscroll:fastscroll:1.0.4'
-    compile 'com.github.castorflex.smoothprogressbar:library-circular:1.1.0'
-    compile 'com.squareup.picasso:picasso:2.5.2'
+    implementation 'com.l4digital.fastscroll:fastscroll:1.0.4'
+    implementation 'com.github.castorflex.smoothprogressbar:library-circular:1.1.0'
+    implementation 'com.squareup.picasso:picasso:2.5.2'
 
     // Dependency Injection
-    compile 'com.google.dagger:dagger:2.14.1'
+    implementation 'com.google.dagger:dagger:2.14.1'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.14.1'
-    provided 'org.glassfish:javax.annotation:10.0-b28'
+    compileOnly 'org.glassfish:javax.annotation:10.0-b28'
 }
