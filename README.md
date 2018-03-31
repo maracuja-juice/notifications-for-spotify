@@ -18,23 +18,23 @@ This app.
 
 - A list of all albums of artists that you follow (sorted by release date, newest first). 
 The List displays:
-   - artist
+   - artist(s)
    - name of the album
    - release date
    - album art
-#### Screenshot from my List
+- It only downloads new albums everyday or when you explicitly request it. The albums get merged with the current albums saved in the database
+#### Screenshot from the List
 
-   <img src="https://user-images.githubusercontent.com/16801528/37864067-a1e5a17c-2f69-11e8-97ce-2896cf6ce4da.png" width="250">
+   <img src="https://user-images.githubusercontent.com/16801528/38161360-e11aeb9a-34cd-11e8-9345-8aa49faf0f28.png" width="250">
 
 ### Planned future improvements
-- Improve performance by saving data to database
-- A setting that allows the app (when setting is turned on) to notify the user when there is a new album added. (-> regularly downloading all albums and merging them with the database)
+- A setting that allows the app (when setting is turned on) to notify the user when there is a new album added. (-> regularly downloading all albums, merging them with the database and send notification)
 - When clicking on an album in the list it should go to a second view. 
     * This view should show details of the album as in the list
     * It should also display a list of all the tracks of the album
     * It should allow the album to be opened in Spotify
     * (maybe) Allow the album/individual tracks to be saved/removed from the library of the user
-- Allow filter of Album List by date
+- Allow to filter the Album List by date
     
 ## Setup of Development environment
 
@@ -70,4 +70,4 @@ In my case the package name is: `com.maracuja_juice.spotifynotifications`
 
 ## Credits
 
-<div>Icons made by <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+<div>Icon made by <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
