@@ -1,5 +1,9 @@
 # Notifications for Spotify
 
+ <img src="https://user-images.githubusercontent.com/16801528/38161679-26d1106e-34d4-11e8-817d-71121e8e922a.png"  align="left"
+width="200"
+    >
+
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/maracuja-juice/notifications-for-spotify/issues)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/71c07fd378814700bf4321f12d9eb390)](https://app.codacy.com/app/mpanchaud/notifications-for-spotify?utm_source=github.com&utm_medium=referral&utm_content=maracuja-juice/notifications-for-spotify&utm_campaign=badger)
 [![Known Vulnerabilities](https://snyk.io/test/github/maracuja-juice/notifications-for-spotify/badge.svg?targetFile=app%2Fbuild.gradle)](https://snyk.io/test/github/maracuja-juice/notifications-for-spotify?targetFile=app%2Fbuild.gradle)
@@ -10,6 +14,7 @@ Ever thought that you want to see which new albums of your favourite artists got
       alt="Direct apk download"
       height="80">](https://github.com/maracuja-juice/notifications-for-spotify/releases/latest)
 
+---
 
 ### Current Features
 
