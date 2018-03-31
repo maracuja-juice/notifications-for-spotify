@@ -4,15 +4,12 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/71c07fd378814700bf4321f12d9eb390)](https://app.codacy.com/app/mpanchaud/notifications-for-spotify?utm_source=github.com&utm_medium=referral&utm_content=maracuja-juice/notifications-for-spotify&utm_campaign=badger)
 [![Known Vulnerabilities](https://snyk.io/test/github/maracuja-juice/notifications-for-spotify/badge.svg?targetFile=app%2Fbuild.gradle)](https://snyk.io/test/github/maracuja-juice/notifications-for-spotify?targetFile=app%2Fbuild.gradle)
 
+Ever thought that you want to see which new albums of your favourite artists got released? Now you can!
 
-## The Problem
+[<img src="https://user-images.githubusercontent.com/16801528/38161462-4e1f19b8-34cf-11e8-8082-49cf95d17be9.png"
+      alt="Direct apk download"
+      height="80">](https://github.com/maracuja-juice/notifications-for-spotify/releases/latest)
 
-- You can follow artists on Spotify but when they add a new album you don't get notified and therefore don't know that they have a new album. You have to find out yourself i.e. trough a different channel (Twitter, Artist Newsletter, etc.)
-- There's no list with recently added albums of all your albums.
-
-## The Solution
-
-This app.
 
 ### Current Features
 
