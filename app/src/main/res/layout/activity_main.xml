@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.maracuja_juice.spotifynotifications.activities.MainActivity">
+    tools:context=".ui.activities.MainActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/mainActivityToolbar"
@@ -21,7 +21,7 @@
 
     <fragment
         android:id="@+id/fragmentProgressBar"
-        android:name="com.maracuja_juice.spotifynotifications.fragments.ProgressBarFragment"
+        android:name="com.maracuja_juice.spotifynotifications.ui.fragments.ProgressBarFragment"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginBottom="8dp"

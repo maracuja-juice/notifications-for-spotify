@@ -1,4 +1,4 @@
-package com.maracuja_juice.spotifynotifications.activities;
+package com.maracuja_juice.spotifynotifications.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,9 +14,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.maracuja_juice.spotifynotifications.R;
-import com.maracuja_juice.spotifynotifications.adapters.AlbumListAdapter;
-import com.maracuja_juice.spotifynotifications.fragments.LoginFragment;
-import com.maracuja_juice.spotifynotifications.fragments.ProgressBarFragment;
+import com.maracuja_juice.spotifynotifications.ui.adapters.AlbumListAdapter;
+import com.maracuja_juice.spotifynotifications.ui.fragments.LoginFragment;
+import com.maracuja_juice.spotifynotifications.ui.fragments.ProgressBarFragment;
 import com.maracuja_juice.spotifynotifications.interfaces.DownloadCompleted;
 import com.maracuja_juice.spotifynotifications.interfaces.LoginListener;
 import com.maracuja_juice.spotifynotifications.model.LoginResult;
