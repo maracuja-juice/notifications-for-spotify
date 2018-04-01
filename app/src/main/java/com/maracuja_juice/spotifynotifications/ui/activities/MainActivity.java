@@ -160,6 +160,8 @@ public class MainActivity extends AppCompatActivity implements DownloadCompleted
         }
         if (refreshButton != null) {
             refreshButton.setEnabled(true);
+            int normalColor = 255;
+            refreshButton.getIcon().setAlpha(normalColor);
             refreshButton = null;
         }
 
@@ -205,6 +207,8 @@ public class MainActivity extends AppCompatActivity implements DownloadCompleted
             case R.id.action_refresh:
                 hardRefreshItems();
                 item.setEnabled(false);
+                int greyIcon = 130;
+                item.getIcon().setAlpha(greyIcon);
                 refreshButton = item;
                 return true;
             default:
