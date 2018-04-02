@@ -4,11 +4,11 @@
 width="200"
     >
 
-[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/maracuja-juice/notifications-for-spotify/issues)
+[![Build Status](https://travis-ci.org/maracuja-juice/notifications-for-spotify.svg?branch=master)](https://travis-ci.org/maracuja-juice/notifications-for-spotify)
 [![Releases](https://img.shields.io/badge/release-v1.1-blue.svg)](https://github.com/maracuja-juice/notifications-for-spotify/releases/latest)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/71c07fd378814700bf4321f12d9eb390)](https://app.codacy.com/app/mpanchaud/notifications-for-spotify?utm_source=github.com&utm_medium=referral&utm_content=maracuja-juice/notifications-for-spotify&utm_campaign=badger)
-[![Build Status](https://travis-ci.org/maracuja-juice/notifications-for-spotify.svg?branch=master)](https://travis-ci.org/maracuja-juice/notifications-for-spotify)
 [![Known Vulnerabilities](https://snyk.io/test/github/maracuja-juice/notifications-for-spotify/badge.svg?targetFile=app%2Fbuild.gradle)](https://snyk.io/test/github/maracuja-juice/notifications-for-spotify?targetFile=app%2Fbuild.gradle)
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/maracuja-juice/notifications-for-spotify/issues)
 
 Ever thought that you want to see which new albums of your favourite artists got released? Now you can!
 
@@ -88,4 +88,4 @@ In my case the package name is: `com.maracuja_juice.spotifynotifications`
 
 ## App Logo
 
-<div>Icon made by <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+Icon made by <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>
