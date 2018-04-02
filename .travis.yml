@@ -34,5 +34,4 @@ cache:
 
 notifications:
   email: false
-  webhooks: https://www.travisbuddy.com/
-  on_success: never
+  webhooks: https://www.travisbuddy.com/?insert=update
