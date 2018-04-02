@@ -58,11 +58,12 @@ The List displays:
 
 1. Create a new app on the [Spotify Developer site](https://beta.developer.spotify.com/dashboard/) 
 TODO: add what you need to click on
-2. Get your dev key (SHA1)
+2. Run the app once
+3. Get your dev key (SHA1)
 
     There are two possibilities:
 
-    1. Run the Gradle Task `signingReport`
+    1. Run the Gradle Task `signingReport` (located under `android`)
     2. Get your dev key trough the Console
     
     macOs:
@@ -77,17 +78,17 @@ TODO: add what you need to click on
     Not depending on which route you take, you need a result similar to this:
     `SHA1: E7:47:B5:45:71:A9:B4:47:EA:AD:21:D7:7C:A2:8D:B4:89:1C:BF:75`
 
-3. Add the dev key to your Spotify online app along with the package name of the app.
+4. Add the dev key to your Spotify online app along with the package name of the app.
 In my case the package name is: `com.maracuja_juice.spotifynotifications`
 
-4. Add a redirect URI
+5. Add a redirect URI on the Spotify Developer site.
 (for example: `spotify-notifications-android://callback`)
 
-5. Change the file `config.properties` in the `res/raw` folder
-6. In the file replace the following lines:
+6. Change the file `config.properties` in the `res/raw` folder
+In the file replace the following lines:
     ```
    redirectUri={insert your redirect uri that you set in your spotify app}
-   clientId={insert client id that you must copy from your spotify app dashboard}
+   clientId={insert the client id that you must copy from your spotify app dashboard}
     ```
 
 7. Have fun.
