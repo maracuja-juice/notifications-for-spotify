@@ -57,6 +57,7 @@ The List displays:
 ## Setup of Development environment
 
 1. Create a new app on the [Spotify Developer site](https://beta.developer.spotify.com/dashboard/) 
+TODO: add what you need to click on
 2. Get your dev key (SHA1)
 
     There are two possibilities:
