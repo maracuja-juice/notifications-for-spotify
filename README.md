@@ -26,7 +26,7 @@ The List displays:
    - release date
    - album art
 - It only downloads new albums everyday or when you explicitly request it. The albums get merged with the current albums saved in the database
-#### Screenshot from the List
+#### Screenshot
 
    <img src="https://user-images.githubusercontent.com/16801528/38161360-e11aeb9a-34cd-11e8-9345-8aa49faf0f28.png" width="250">
 
@@ -38,7 +38,21 @@ The List displays:
     * It should allow the album to be opened in Spotify
     * (maybe) Allow the album/individual tracks to be saved/removed from the library of the user
 - Allow to filter the Album List by date
-    
+  
+## Specs / Open-Source libraries:
+- Minimum **SDK 15**
+- [**Android Auth**](https://github.com/spotify/android-auth) for the Spotify Authentication
+- [**Spotify Web API Android**](https://github.com/kaaes/spotify-web-api-android) for the Spotify Web API requests
+- [**Joda Time**](https://github.com/dlew/joda-time-android) for easier handling of dates and time
+- [**Lightweight Stream API**](https://github.com/aNNiMON/Lightweight-Stream-API) for backwards compatible streams
+- [**Objectbox**](https://github.com/objectbox/objectbox-java) for super fast database handling
+- [**Jackson**](https://github.com/FasterXML/jackson-databind) for super fast JSON parsing
+- [**FastScroll**](https://github.com/L4Digital/FastScroll) to add FastScroll behaviour to a RecyclerView
+- [**Smooth ProgressBar**](https://github.com/castorflex/SmoothProgressBar) for the Progress Bar
+- [**Picasso**](https://github.com/square/picasso) for loading images
+- [**Dagger**](https://github.com/google/dagger) for Dependency Injection
+- **Android Support Libraries**, the almighty :)
+  
 ## Setup of Development environment
 
 1. Create a new app on the Spotify Developer site. 
@@ -71,6 +85,6 @@ In my case the package name is: `com.maracuja_juice.spotifynotifications`
 
 7. Have fun.
 
-## Credits
+## App Logo
 
 <div>Icon made by <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
