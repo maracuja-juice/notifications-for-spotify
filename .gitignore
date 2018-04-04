@@ -191,4 +191,6 @@ fabric.properties
 
 # End of https://www.gitignore.io/api/java,android,androidstudio
 
+# custom configuration
 !/gradle/wrapper/gradle-wrapper.jar
+.idea/caches # this only causes problems with git merging etc.
