@@ -15,7 +15,6 @@ import com.squareup.picasso.Picasso;
 import java.util.Collections;
 import java.util.List;
 
-import kaaes.spotify.webapi.android.models.Album;
 
 /**
  * Created by Maurice on 03.03.18.
