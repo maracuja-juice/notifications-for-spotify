@@ -56,40 +56,42 @@ The List displays:
   
 ## Setup of Development environment
 
+To further develop the app you need the authentication with Spotify to work correctly.
+
 1. Create a new app on the [Spotify Developer site](https://beta.developer.spotify.com/dashboard/) 
-2. Get your dev key (SHA1)
+   Steps needed:
+   - Login
+   - Click on `Create a Client ID`
+   - In the popup give the app a name, description and click that is a mobile app. It's not so important what name you give it.
+   - Go to the next step
+   - Click `No` and go to the next step
+   - Read the text in the three boxes and check all of them (otherwise this won't work...)
+   - Click on submit
+2. Run the android app once
+3. Get your dev key (SHA1)
 
-    There are two possibilities:
-
-    1. Run the Gradle Task `signingReport`
-    2. Get your dev key trough the Console
-    
-    macOs:
-    
-    `keytool -exportcert -alias androiddebugkey -keystore ~/.android/debug.keystore -list -v | grep SHA1`
-
-    Windows:
-    
-    `keytool -exportcert -alias androiddebugkey -keystore %HOMEPATH%\.android\debug.keystore -list -v | grep SHA1`
-
-
-    Not depending on which route you take, you need a result similar to this:
+    Run the Gradle Task `signingReport` (located under `android`)
+    In the output window you should see an output similar to this:
     `SHA1: E7:47:B5:45:71:A9:B4:47:EA:AD:21:D7:7C:A2:8D:B4:89:1C:BF:75`
 
-3. Add the dev key to your Spotify online app along with the package name of the app.
-In my case the package name is: `com.maracuja_juice.spotifynotifications`
-
-4. Add a redirect URI
-(for example: `spotify-notifications-android://callback`)
-
-5. Change the file `config.properties` in the `res/raw` folder
-6. In the file replace the following lines:
+4. Add the following information to the app on the Spotify Developer website:
+   - the key you just got
+   - the package name of the app (`com.maracuja_juice.spotifynotifications`)
+   - a redirect URI (for example: `spotify-notifications-android://callback`)
+   
+   You can add it by clicking on `Edit Settings` and then putting the information into the corresponding fields.
+   
+5. Change the content of the file `config.properties` in the `res/raw` folder
+Replace it with the two following lines:
     ```
    redirectUri={insert your redirect uri that you set in your spotify app}
-   clientId={insert client id that you must copy from your spotify app dashboard}
+   clientId={insert the client id that you must copy from your spotify app dashboard}
     ```
+   And then insert your redirectUri and clientId into the `{}` placeholders.
+   Don't check in the updated version of this file, this is just for yourself.
+6. Have fun!
 
-7. Have fun.
+If you have any problems with the setup: let me know.
 
 ## App Logo
 
