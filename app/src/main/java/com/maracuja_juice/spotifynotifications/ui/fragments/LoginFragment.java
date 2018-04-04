@@ -1,4 +1,4 @@
-package com.maracuja_juice.spotifynotifications.fragments;
+package com.maracuja_juice.spotifynotifications.ui.fragments;
 
 import android.app.Activity;
 import android.content.Context;
@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
-import com.maracuja_juice.spotifynotifications.activities.MainActivity;
+import com.maracuja_juice.spotifynotifications.ui.activities.MainActivity;
 import com.maracuja_juice.spotifynotifications.helper.ConfigReader;
 import com.maracuja_juice.spotifynotifications.interfaces.LoginListener;
 import com.maracuja_juice.spotifynotifications.model.LoginResult;

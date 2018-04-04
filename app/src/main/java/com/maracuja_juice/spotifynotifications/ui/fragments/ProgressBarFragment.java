@@ -1,4 +1,4 @@
-package com.maracuja_juice.spotifynotifications.fragments;
+package com.maracuja_juice.spotifynotifications.ui.fragments;
 
 
 import android.os.Bundle;
