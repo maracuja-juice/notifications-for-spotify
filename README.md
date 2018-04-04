@@ -56,6 +56,8 @@ The List displays:
   
 ## Setup of Development environment
 
+To further develop the app you need the authentication with Spotify to work correctly.
+
 1. Create a new app on the [Spotify Developer site](https://beta.developer.spotify.com/dashboard/) 
    Steps needed:
    - Login
