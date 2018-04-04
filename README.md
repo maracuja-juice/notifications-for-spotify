@@ -42,7 +42,6 @@ The List displays:
   
 ## Specs / Open-Source libraries:
 - Minimum **SDK 15**
-- [**Android Auth**](https://github.com/spotify/android-auth) for the Spotify Authentication
 - [**Spotify Web API Android**](https://github.com/kaaes/spotify-web-api-android) for the Spotify Web API requests
 - [**Joda Time**](https://github.com/dlew/joda-time-android) for easier handling of dates and time
 - [**Lightweight Stream API**](https://github.com/aNNiMON/Lightweight-Stream-API) for backwards compatible streams
@@ -53,7 +52,7 @@ The List displays:
 - [**Picasso**](https://github.com/square/picasso) for loading images
 - [**Dagger**](https://github.com/google/dagger) for Dependency Injection
 - **Android Support Libraries**, the almighty :)
-  
+
 ## Setup of Development environment
 
 To further develop the app you need the authentication with Spotify to work correctly.
