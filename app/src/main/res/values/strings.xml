@@ -2,4 +2,6 @@
     <string name="app_name">Spotify Notifications</string>
     <string name="thumbnail">Thumbnail</string>
     <string name="action_refresh">refresh</string>
+    <string name="intent_authorization">authorization_uri</string>
+    <string name="redirect_uri">spotify-notifications-android://callback</string>
 </resources>

@@ -3,9 +3,12 @@ package com.maracuja_juice.spotifynotifications.ui.fragments;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
+import com.maracuja_juice.spotifynotifications.R;
+import com.maracuja_juice.spotifynotifications.ui.activities.AuthorizationActivity;
 import com.maracuja_juice.spotifynotifications.ui.activities.MainActivity;
 import com.maracuja_juice.spotifynotifications.helper.ConfigReader;
 import com.maracuja_juice.spotifynotifications.interfaces.LoginListener;
@@ -38,16 +41,23 @@ public class LoginFragment extends Fragment {
     }
 
     public void startLogin(Activity parentActivity) {
+        String authorizationUri = getRequestUri();
+
+        Intent intent = new Intent(getActivity(), AuthorizationActivity.class);
+        intent.putExtra(getString(R.string.intent_authorization), authorizationUri);
+        startActivity(intent);
+    }
+
+    private String getRequestUri() {
         String clientId = ConfigReader.getConfigValue(context, "clientId");
-        String redirectUri = ConfigReader.getConfigValue(context, "redirectUri");
+        String redirectUri = getString(R.string.redirect_uri);
 
         AuthenticationRequest.Builder builder =
                 new AuthenticationRequest.Builder(clientId, AuthenticationResponse.Type.TOKEN, redirectUri);
-
         builder.setScopes(permissionScopes);
         AuthenticationRequest request = builder.build();
-
-        AuthenticationClient.openLoginActivity(parentActivity, REQUEST_CODE, request);
+        return request.toUri().toString(); // TODO: this don't work correctly. response_type should be code
+        // TODO: So I think I need my own implementation of the authenticationRequest Builde
     }
 
     @Override

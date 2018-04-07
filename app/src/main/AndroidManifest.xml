@@ -16,12 +16,16 @@
         <activity android:name=".ui.activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.spotify.sdk.android.authentication.LoginActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity android:name=".ui.activities.AuthorizationActivity">
+            <intent-filter>
+                <data android:scheme="@string/redirect_uri"
+                    android:host="callback" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
