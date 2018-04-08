@@ -3,16 +3,15 @@ package com.maracuja_juice.spotifynotifications.ui.fragments;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.maracuja_juice.spotifynotifications.R;
-import com.maracuja_juice.spotifynotifications.ui.activities.AuthorizationActivity;
-import com.maracuja_juice.spotifynotifications.ui.activities.MainActivity;
 import com.maracuja_juice.spotifynotifications.helper.ConfigReader;
 import com.maracuja_juice.spotifynotifications.interfaces.LoginListener;
 import com.maracuja_juice.spotifynotifications.model.LoginResult;
+import com.maracuja_juice.spotifynotifications.ui.activities.AuthorizationActivity;
+import com.maracuja_juice.spotifynotifications.ui.activities.MainActivity;
 import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
@@ -53,7 +52,7 @@ public class LoginFragment extends Fragment {
         String redirectUri = getString(R.string.redirect_uri);
 
         AuthenticationRequest.Builder builder =
-                new AuthenticationRequest.Builder(clientId, AuthenticationResponse.Type.TOKEN, redirectUri);
+                new AuthenticationRequest.Builder(clientId, AuthenticationResponse.Type.CODE, redirectUri);
         builder.setScopes(permissionScopes);
         AuthenticationRequest request = builder.build();
         return request.toUri().toString(); // TODO: this don't work correctly. response_type should be code
