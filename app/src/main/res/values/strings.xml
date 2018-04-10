@@ -3,5 +3,7 @@
     <string name="thumbnail">Thumbnail</string>
     <string name="action_refresh">refresh</string>
     <string name="intent_authorization">authorization_uri</string>
+    <!-- todo: rename the extras: https://stackoverflow.com/questions/4433790 -->
+    <string name="intent_authorize_code">authorization_code</string>
     <string name="redirect_uri">spotify-notifications-android://callback</string>
 </resources>

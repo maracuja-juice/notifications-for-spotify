@@ -55,10 +55,10 @@ public class LoginFragment extends Fragment {
                 new AuthenticationRequest.Builder(clientId, AuthenticationResponse.Type.CODE, redirectUri);
         builder.setScopes(permissionScopes);
         AuthenticationRequest request = builder.build();
-        return request.toUri().toString(); // TODO: this don't work correctly. response_type should be code
-        // TODO: So I think I need my own implementation of the authenticationRequest Builde
+        return request.toUri().toString(); // TODO: make my own implementation of building the authenticationRequest
     }
 
+    // TODO: What do I do with this? -> remove?
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
