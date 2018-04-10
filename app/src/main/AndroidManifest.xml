@@ -20,10 +20,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activities.AuthorizationActivity">
+        <activity android:name=".ui.activities.AuthorizationActivity"></activity>
+        <activity android:name=".ui.activities.TokenActivity">
             <intent-filter>
-                <data android:scheme="@string/redirect_uri"
-                    android:host="callback" />
+                <data
+                    android:host="callback"
+                    android:scheme="@string/redirect_uri" />
             </intent-filter>
         </activity>
     </application>
