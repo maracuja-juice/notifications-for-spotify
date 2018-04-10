@@ -38,6 +38,10 @@ dependencies {
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
 
+    //Network
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-jackson:2.4.0'
+
     // Util
     implementation 'com.spotify.android:auth:1.0.0-alpha'
     implementation 'com.github.kaaes:spotify-web-api-android:0.4.1'
