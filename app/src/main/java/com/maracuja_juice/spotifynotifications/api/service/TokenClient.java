@@ -12,9 +12,13 @@ public interface TokenClient {
 
     @FormUrlEncoded
     @POST("token")
-    Call<AccessTokenResponse> token(@Field("code") String code);
+    Call<AccessTokenResponse> token(
+            @Field("code") String code
+    );
 
     @FormUrlEncoded
     @POST("refresh_token")
-    Call<RefreshTokenResponse> refreshToken(@Field("refresh_token") String refreshToken);
+    Call<RefreshTokenResponse> refreshToken(
+            @Field("refresh_token") String refreshToken
+    );
 }
