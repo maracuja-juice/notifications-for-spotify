@@ -7,13 +7,11 @@ import android.util.Log;
 import com.maracuja_juice.spotifynotifications.R;
 import com.maracuja_juice.spotifynotifications.api.model.AccessTokenResponse;
 import com.maracuja_juice.spotifynotifications.api.service.TokenClient;
+import com.maracuja_juice.spotifynotifications.api.service.TokenServiceGenerator;
 
-import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.jackson.JacksonConverterFactory;
 
 public class TokenActivity extends AppCompatActivity {
 
@@ -33,26 +31,8 @@ public class TokenActivity extends AppCompatActivity {
 
         // TODO I think all of this doesn't belong here and actually I think this activity isn't needed at all!
 
-        String API_BASE_URL = "https://refresh-token-spotify.herokuapp.com/api/";
-
-        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-
-        Retrofit.Builder builder =
-                new Retrofit.Builder()
-                        .baseUrl(API_BASE_URL)
-                        .addConverterFactory(
-                                JacksonConverterFactory.create()
-                        );
-
-        Retrofit retrofit =
-                builder
-                        .client(
-                                httpClient.build()
-                        )
-                        .build();
-
-        TokenClient client = retrofit.create(TokenClient.class);
-
+        // TODO this hasn't been tested!
+        TokenClient client = TokenServiceGenerator.createService();
         Call<AccessTokenResponse> call = client.token(code);
         call.enqueue(new Callback<AccessTokenResponse>() {
             @Override
