@@ -1,5 +1,6 @@
 package com.maracuja_juice.spotifynotifications.api.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class AccessTokenResponse {
@@ -14,12 +15,9 @@ public class AccessTokenResponse {
     @JsonProperty("scope")
     private String scope;
 
-    public AccessTokenResponse(String accessToken, String tokenType, int expiresIn, String refreshToken, String scope) {
-        this.accessToken = accessToken;
-        this.tokenType = tokenType;
-        this.expiresIn = expiresIn;
-        this.refreshToken = refreshToken;
-        this.scope = scope;
+    @JsonCreator
+    public AccessTokenResponse() {
+
     }
 
     public String getAccessToken() {
