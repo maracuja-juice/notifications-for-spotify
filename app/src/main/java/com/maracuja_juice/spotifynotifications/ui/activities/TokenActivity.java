@@ -29,8 +29,6 @@ public class TokenActivity extends AppCompatActivity {
         Log.d(LOG_TAG, bundle.getString(getString(R.string.intent_authorize_code)));
         String code = bundle.getString(getString(R.string.intent_authorize_code));
 
-        // TODO I think all of this doesn't belong here and actually I think this activity isn't needed at all!
-
         TokenClient client = TokenServiceGenerator.createService();
         Call<AccessTokenResponse> call = client.token(code);
         call.enqueue(new Callback<AccessTokenResponse>() {
@@ -39,6 +37,9 @@ public class TokenActivity extends AppCompatActivity {
                 Log.d(LOG_TAG, "network request was successful");
                 Log.d(LOG_TAG, response.body().getAccessToken());
                 Log.d(LOG_TAG, response.body().getScope());
+                // TODO: make this a util class!
+                // TODO: now I can save these two values
+                // TODO and a subscriber of these values could then start the task OR it gets started from mainActivity
             }
 
             @Override
@@ -48,7 +49,6 @@ public class TokenActivity extends AppCompatActivity {
             }
         });
 
-        // TODO: now I need to call my service here.
         // TODO: Make a retrofit class that has the two methods just like my service.
         // TODO: this should only call the token endpoint: that should only be called once (unless someone reverts the permission )
     }
