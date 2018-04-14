@@ -31,7 +31,6 @@ public class TokenActivity extends AppCompatActivity {
 
         // TODO I think all of this doesn't belong here and actually I think this activity isn't needed at all!
 
-        // TODO this hasn't been tested!
         TokenClient client = TokenServiceGenerator.createService();
         Call<AccessTokenResponse> call = client.token(code);
         call.enqueue(new Callback<AccessTokenResponse>() {
@@ -44,6 +43,7 @@ public class TokenActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<AccessTokenResponse> call, Throwable t) {
+                Log.e(LOG_TAG, t.getMessage());
                 Log.d(LOG_TAG, "network request failed");
             }
         });

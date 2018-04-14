@@ -41,6 +41,7 @@ dependencies {
     //Network
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.retrofit2:converter-jackson:2.4.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.8.0'
 
     // Util
     implementation 'com.spotify.android:auth:1.0.0-alpha'
