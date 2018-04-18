@@ -6,4 +6,5 @@
     <!-- todo: rename the extras: https://stackoverflow.com/questions/4433790 -->
     <string name="intent_authorize_code">authorization_code</string>
     <string name="redirect_uri">spotify-notifications-android://callback</string>
+    <string name="EXTRA_ACCESS_CODE">com.maracuja_juice.extra.access_code</string>
 </resources>

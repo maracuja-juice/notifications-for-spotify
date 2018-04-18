@@ -11,7 +11,7 @@ import android.webkit.WebViewClient;
 import com.maracuja_juice.spotifynotifications.R;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
 
-// TODO: investigate if I need to split LoginFragment and AuthorizationActivity. Just done like this for the moment.
+// TODO: investigate if I need to split AuthorizationFragment and AuthorizationActivity. Just done like this for the moment.
 // TODO: Rename to authentication? What is what again? :)
 
 public class AuthorizationActivity extends AppCompatActivity {
@@ -39,11 +39,13 @@ public class AuthorizationActivity extends AppCompatActivity {
                 if (url.contains(getString(R.string.redirect_uri))) {
                     Log.d(LOG_TAG, "CONTAINS REDIRECT URI");
                     // TODO: I could make this parsing myself as I only need the code anyway!
-                    // TODO: handle errors with switch and response.getType()
-                    // TODO: make this into it's own method. bit messy
                     AuthenticationResponse response = AuthenticationResponse.fromUri(Uri.parse(url));
+
                     String code = response.getCode();
-                    startTokenActivity(code);
+                    String extraName = getString(R.string.EXTRA_ACCESS_CODE);
+                    Intent intent = new Intent().putExtra(extraName, code);
+                    setResult(RESULT_OK, intent);
+                    finish();
                     return true;
                 }
 
@@ -52,15 +54,6 @@ public class AuthorizationActivity extends AppCompatActivity {
         });
         webView.getSettings().setJavaScriptEnabled(true);
         webView.loadUrl(url);
-    }
-
-    // TODO: do I need tokenActivity??
-    private void startTokenActivity(String code) {
-        Log.d(LOG_TAG, "this is the code: " + code);
-        Intent intent = new Intent(this, TokenActivity.class);
-        intent.putExtra(getString(R.string.intent_authorize_code), code);
-        startActivity(intent);
-        finish();
     }
 
     private String getRequestFromIntent() {

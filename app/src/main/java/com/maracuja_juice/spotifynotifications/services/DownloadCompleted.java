@@ -1,4 +1,4 @@
-package com.maracuja_juice.spotifynotifications.interfaces;
+package com.maracuja_juice.spotifynotifications.services;
 
 import java.util.List;
 

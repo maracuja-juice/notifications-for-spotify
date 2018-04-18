@@ -14,15 +14,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.maracuja_juice.spotifynotifications.R;
-import com.maracuja_juice.spotifynotifications.ui.adapters.AlbumListAdapter;
-import com.maracuja_juice.spotifynotifications.ui.fragments.LoginFragment;
-import com.maracuja_juice.spotifynotifications.ui.fragments.ProgressBarFragment;
-import com.maracuja_juice.spotifynotifications.interfaces.DownloadCompleted;
-import com.maracuja_juice.spotifynotifications.interfaces.LoginListener;
-import com.maracuja_juice.spotifynotifications.model.LoginResult;
+import com.maracuja_juice.spotifynotifications.api.service.AuthorizationListener;
+import com.maracuja_juice.spotifynotifications.api.service.RefreshTokenListener;
 import com.maracuja_juice.spotifynotifications.model.MyAlbum;
 import com.maracuja_juice.spotifynotifications.model.StartupPreferences;
+import com.maracuja_juice.spotifynotifications.services.DownloadCompleted;
 import com.maracuja_juice.spotifynotifications.services.SpotifyCrawlerTask;
+import com.maracuja_juice.spotifynotifications.ui.adapters.AlbumListAdapter;
+import com.maracuja_juice.spotifynotifications.ui.fragments.AuthorizationFragment;
+import com.maracuja_juice.spotifynotifications.ui.fragments.ProgressBarFragment;
 
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
@@ -37,7 +37,7 @@ import static com.maracuja_juice.spotifynotifications.database.dao.MyAlbumDao.su
 import static com.maracuja_juice.spotifynotifications.database.dao.StartupPreferencesDao.getStartupPreferences;
 import static com.maracuja_juice.spotifynotifications.database.dao.StartupPreferencesDao.updateStartupPreferences;
 
-public class MainActivity extends AppCompatActivity implements DownloadCompleted, LoginListener {
+public class MainActivity extends AppCompatActivity implements DownloadCompleted, AuthorizationListener, RefreshTokenListener {
 
     private static final String LOG_TAG = MainActivity.class.getName();
 
@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements DownloadCompleted
     private RecyclerView.Adapter recyclerViewAdapter;
 
     private ProgressBarFragment progressBarFragment;
-    private LoginFragment loginFragment;
+    private AuthorizationFragment loginFragment;
 
     private StartupPreferences startupPreferences;
 
@@ -61,14 +61,16 @@ public class MainActivity extends AppCompatActivity implements DownloadCompleted
         startupInitialization();
         subscribeToMyAlbumList(this::updateList);
 
+        // TODO refactor this thing here?
+        boolean needToAuthorize = startupPreferences.needToAuthorize();
         boolean needToDownload = startupPreferences.needToDownload();
         boolean needToLogin = startupPreferences.needToLogin();
-        String savedToken = startupPreferences.getToken();
+        String savedToken = startupPreferences.getCurrentAccessToken();
         if (savedToken != null) {
             token = savedToken;
         }
 
-        determineWhatToDoOnStartup(needToDownload, needToLogin);
+        determineWhatToDoOnStartup(needToDownload, needToLogin, needToAuthorize);
     }
 
     private void startupInitialization() {
@@ -97,9 +99,11 @@ public class MainActivity extends AppCompatActivity implements DownloadCompleted
         }
     }
 
-    private void determineWhatToDoOnStartup(boolean needToDownload, boolean needToLogin) {
+    private void determineWhatToDoOnStartup(boolean needToDownload, boolean needToLogin, boolean needToAuthorize) {
         if (needToDownload) {
-            if (needToLogin) {
+            if (needToAuthorize) {
+                authorizeAndDownload();
+            } else if (needToLogin) {
                 Log.d(LOG_TAG, "logging in...");
                 loginAndDownload();
             } else {
@@ -108,12 +112,17 @@ public class MainActivity extends AppCompatActivity implements DownloadCompleted
         }
     }
 
-    private void loginAndDownload() {
-        loginFragment = new LoginFragment();
+    private void authorizeAndDownload() {
+        // TODO refactor with new names
+        loginFragment = new AuthorizationFragment();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.add(loginFragment, "loginAndDownload").commitNow();
+        // TODO: ...
+        loginFragment.startLogin();
+    }
 
-        loginFragment.startLogin(this);
+    private void loginAndDownload() {
+        // TODO: call refresh token
     }
 
     private void download() {
@@ -129,27 +138,6 @@ public class MainActivity extends AppCompatActivity implements DownloadCompleted
         if (loginFragment != null) {
             loginFragment.onActivityResult(requestCode, resultCode, data);
         }
-    }
-
-    @Override
-    public void loginFinished(LoginResult result) {
-        token = result.getToken();
-        int expiresIn = result.getTokenExpirationIn();
-        saveValuesFromLoginToPreferences(token, expiresIn);
-
-        download();
-
-        fragmentManager.beginTransaction().remove(loginFragment).commitNow();
-        loginFragment = null;
-    }
-
-    private void saveValuesFromLoginToPreferences(String token, int tokenExpiresInSeconds) {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime tokenExpiration = now.plusSeconds(tokenExpiresInSeconds);
-
-        startupPreferences.setTokenExpiration(tokenExpiration);
-        startupPreferences.setToken(token);
-        updateStartupPreferences(startupPreferences);
     }
 
     @Override
@@ -216,4 +204,23 @@ public class MainActivity extends AppCompatActivity implements DownloadCompleted
         }
     }
 
+    @Override
+    public void authorizationFinished(String accessToken, String refreshToken, int secondsToExpiration) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime tokenExpiration = now.plusSeconds(secondsToExpiration);
+        startupPreferences.setTokenExpiration(tokenExpiration);
+        startupPreferences.setCurrentAccessToken(token);
+        // TODO: refresh token.
+        updateStartupPreferences(startupPreferences);
+
+        download();
+
+        fragmentManager.beginTransaction().remove(loginFragment).commitNow();
+        loginFragment = null;
+    }
+
+    @Override
+    public void refreshFinished(String accessToken, int secondsToExpiration) {
+        // TODO implement refresh finished
+    }
 }

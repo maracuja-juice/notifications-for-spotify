@@ -21,13 +21,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.activities.AuthorizationActivity"></activity>
-        <activity android:name=".ui.activities.TokenActivity">
-            <intent-filter>
-                <data
-                    android:host="callback"
-                    android:scheme="@string/redirect_uri" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>

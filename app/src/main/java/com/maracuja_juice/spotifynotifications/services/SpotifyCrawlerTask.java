@@ -5,7 +5,6 @@ import android.os.Build;
 
 import com.annimon.stream.Stream;
 import com.maracuja_juice.spotifynotifications.di.DaggerSpotifyApiComponent;
-import com.maracuja_juice.spotifynotifications.interfaces.DownloadCompleted;
 
 import java.util.ArrayList;
 import java.util.List;

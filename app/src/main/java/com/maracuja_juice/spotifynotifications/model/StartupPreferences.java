@@ -23,7 +23,8 @@ public class StartupPreferences {
     @Convert(converter = LocalDateTimeConverter.class, dbType = String.class)
     private LocalDateTime tokenExpiration;
 
-    private String token;
+    private String currentAccessToken;
+    private String refreshToken;
 
     @Convert(converter = LocalDateConverter.class, dbType = String.class)
     private LocalDate lastDownload;
@@ -31,24 +32,23 @@ public class StartupPreferences {
     public StartupPreferences() {
     }
 
-    public StartupPreferences(Long id, LocalDateTime tokenExpiration, String token, LocalDate lastDownload) {
+    public StartupPreferences(Long id, LocalDateTime tokenExpiration, String currentAccessToken, String refreshToken, LocalDate lastDownload) {
         this.id = id;
         this.tokenExpiration = tokenExpiration;
-        this.token = token;
+        this.currentAccessToken = currentAccessToken;
+        this.refreshToken = refreshToken;
         this.lastDownload = lastDownload;
     }
 
     public boolean needToDownload() {
-        // TODO: mock this datetime or something? Or somehow else make it adjustable for tests
-        return needToDownload(LocalDate.now());
+        return lastDownload == null || LocalDate.now().isAfter(lastDownload);
     }
 
-    public boolean needToDownload(LocalDate threshold) {
-        return lastDownload == null || threshold.isAfter(lastDownload);
+    public boolean needToAuthorize() {
+        return refreshToken == null; // TODO: re authorization won't happen with this code
     }
 
     public boolean needToLogin() {
-        // TODO: mock this datetime or something? Or somehow else make it adjustable for tests
         return tokenExpiration == null || LocalDateTime.now().isAfter(tokenExpiration);
     }
 
@@ -69,12 +69,20 @@ public class StartupPreferences {
         this.tokenExpiration = tokenExpiration;
     }
 
-    public String getToken() {
-        return token;
+    public String getCurrentAccessToken() {
+        return currentAccessToken;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setCurrentAccessToken(String currentAccessToken) {
+        this.currentAccessToken = currentAccessToken;
+    }
+
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 
     public LocalDate getLastDownload() {
@@ -84,4 +92,5 @@ public class StartupPreferences {
     public void setLastDownload(LocalDate lastDownload) {
         this.lastDownload = lastDownload;
     }
+
 }
