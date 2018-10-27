@@ -1,14 +1,14 @@
-# Notifications for Spotify
+# Spotify Releases App
 
  <img src="https://user-images.githubusercontent.com/16801528/38161679-26d1106e-34d4-11e8-817d-71121e8e922a.png"  align="left"
 width="200"
     >
 
-[![Build Status](https://travis-ci.org/maracuja-juice/notifications-for-spotify.svg?branch=master)](https://travis-ci.org/maracuja-juice/notifications-for-spotify)
-[![Releases](https://img.shields.io/badge/release-v1.1.1-blue.svg)](https://github.com/maracuja-juice/notifications-for-spotify/releases/latest)
+[![Build Status](https://travis-ci.org/maracuja-juice/spotify-releases-app.svg?branch=master)](https://travis-ci.org/maracuja-juice/spotify-releases-app)
+[![Releases](https://img.shields.io/badge/release-v1.1.1-blue.svg)](https://github.com/maracuja-juice/spotify-releases-app/releases/latest)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/71c07fd378814700bf4321f12d9eb390)](https://app.codacy.com/app/mpanchaud/notifications-for-spotify?utm_source=github.com&utm_medium=referral&utm_content=maracuja-juice/notifications-for-spotify&utm_campaign=badger)
-[![Known Vulnerabilities](https://snyk.io/test/github/maracuja-juice/notifications-for-spotify/badge.svg?targetFile=app%2Fbuild.gradle)](https://snyk.io/test/github/maracuja-juice/notifications-for-spotify?targetFile=app%2Fbuild.gradle)
-[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/maracuja-juice/notifications-for-spotify/issues)
+[![Known Vulnerabilities](https://snyk.io/test/github/maracuja-juice/spotify-releases-app/badge.svg?targetFile=app%2Fbuild.gradle)](https://snyk.io/test/github/maracuja-juice/spotify-releases-app?targetFile=app%2Fbuild.gradle)
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/maracuja-juice/spotify-releases-app/issues)
 
 Ever thought that you want to see which new albums of your favourite artists got released? Now you can!
 
@@ -27,18 +27,15 @@ The List displays:
    - release date
    - album art
 - It only downloads new albums everyday or when you explicitly request it. The albums get merged with the current albums saved in the database
+- When clicking on an item in the list it will open the album/single directly in the Spotify app
+
 #### Screenshot
 
    <img src="https://user-images.githubusercontent.com/16801528/38161360-e11aeb9a-34cd-11e8-9345-8aa49faf0f28.png" width="250">
 
 ### Planned future improvements
-- A setting that allows the app (when setting is turned on) to notify the user when there is a new album added. (-> regularly downloading all albums, merging them with the database and send notification)
-- When clicking on an album in the list it should go to a second view. 
-    * This view should show details of the album as in the list
-    * It should also display a list of all the tracks of the album
-    * It should allow the album to be opened in Spotify
-    * (maybe) Allow the album/individual tracks to be saved/removed from the library of the user
-- Allow to filter the Album List by date
+- A setting that allows the app (when setting is turned on) to notify the user when there is a new album added. Or otherwise reminding the user that there (maybe?) were new albums released.
+- Play Spotify track directly from the app
   
 ## Specs / Open-Source libraries:
 - Minimum **SDK 15**
