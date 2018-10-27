@@ -25,9 +25,13 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.View
     private List<MyAlbum> dataSource;
     private Context context;
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        // TODO: onclick would be handled here.
+    private OnItemClicked onClick;
 
+    public interface OnItemClicked {
+        void onItemClick(int position);
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView albumArt;
         public TextView albumTitle;
         public TextView artists;
@@ -66,11 +70,20 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.View
         Picasso.with(context).load(myAlbum.getImageUrl())
                 .placeholder(R.drawable.placeholder_album).into(holder.albumArt);
 
+        holder.itemView.setOnClickListener(v -> onClick.onItemClick(position));
+    }
+
+    public void setOnClick(OnItemClicked onClick) {
+        this.onClick=onClick;
     }
 
     @Override
     public int getItemCount() {
         return dataSource.size();
+    }
+
+    public MyAlbum getMyAlbum(int position) {
+        return dataSource.get(position);
     }
 
     public void setDataSource(List<MyAlbum> albums) {

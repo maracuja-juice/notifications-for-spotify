@@ -1,6 +1,7 @@
 package com.maracuja_juice.spotifynotifications.ui.activities;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -12,8 +13,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.maracuja_juice.spotifynotifications.R;
+import com.maracuja_juice.spotifynotifications.helper.AppInstallationHelper;
 import com.maracuja_juice.spotifynotifications.ui.adapters.AlbumListAdapter;
 import com.maracuja_juice.spotifynotifications.ui.fragments.LoginFragment;
 import com.maracuja_juice.spotifynotifications.ui.fragments.ProgressBarFragment;
@@ -37,14 +40,14 @@ import static com.maracuja_juice.spotifynotifications.database.dao.MyAlbumDao.su
 import static com.maracuja_juice.spotifynotifications.database.dao.StartupPreferencesDao.getStartupPreferences;
 import static com.maracuja_juice.spotifynotifications.database.dao.StartupPreferencesDao.updateStartupPreferences;
 
-public class MainActivity extends AppCompatActivity implements DownloadCompleted, LoginListener {
+public class MainActivity extends AppCompatActivity implements DownloadCompleted, LoginListener, AlbumListAdapter.OnItemClicked {
 
     private static final String LOG_TAG = MainActivity.class.getName();
 
     private String token;
 
     private FragmentManager fragmentManager;
-    private RecyclerView.Adapter recyclerViewAdapter;
+    private AlbumListAdapter recyclerViewAdapter;
 
     private ProgressBarFragment progressBarFragment;
     private LoginFragment loginFragment;
@@ -181,6 +184,7 @@ public class MainActivity extends AppCompatActivity implements DownloadCompleted
 
         recyclerViewAdapter = new AlbumListAdapter(this, myAlbums);
         recyclerView.setAdapter(recyclerViewAdapter);
+        recyclerViewAdapter.setOnClick(MainActivity.this); // Bind the listener
     }
 
     private void hardRefreshItems() {
@@ -216,4 +220,20 @@ public class MainActivity extends AppCompatActivity implements DownloadCompleted
         }
     }
 
+    @Override
+    public void onItemClick(int position) {
+        MyAlbum myAlbum = recyclerViewAdapter.getMyAlbum(position);
+
+        boolean isSpotifyInstalled = AppInstallationHelper.isSpotifyInstalled(getPackageManager());
+        if (isSpotifyInstalled) {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+
+            intent.setData(Uri.parse(myAlbum.getAlbum().uri));
+            intent.putExtra(Intent.EXTRA_REFERRER,
+                    Uri.parse("android-app://" + getApplicationContext().getPackageName()));
+            startActivity(intent);
+        } else {
+            Toast.makeText(this, "Error: Please install the Spotify app.", Toast.LENGTH_SHORT).show();
+        }
+    }
 }

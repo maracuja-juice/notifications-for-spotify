@@ -3,7 +3,9 @@ package com.maracuja_juice.spotifynotifications.database.dao;
 import android.util.Log;
 
 import com.maracuja_juice.spotifynotifications.model.MyAlbum;
+import com.maracuja_juice.spotifynotifications.model.MyAlbum_;
 
+import org.joda.time.LocalDate;
 import java.util.List;
 
 import io.objectbox.Box;
@@ -32,7 +34,9 @@ public class MyAlbumDao {
     }
 
     public static DataSubscription subscribeToMyAlbumList(DataObserver<List<MyAlbum>> observer) {
-        return getMyAlbumBox().query().build().subscribe().on(AndroidScheduler.mainThread()).observer(observer);
+        return getMyAlbumBox().query()
+                .greater(MyAlbum_.releaseDate, LocalDate.now().minusMonths(3).toString())
+                .build().subscribe().on(AndroidScheduler.mainThread()).observer(observer);
     }
 
     public static void mergeAndSaveAlbums(List<Album> albums) {
