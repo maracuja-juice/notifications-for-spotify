@@ -1,4 +1,4 @@
-# Spotify Release
+# Spotify Releases App
 
  <img src="https://user-images.githubusercontent.com/16801528/38161679-26d1106e-34d4-11e8-817d-71121e8e922a.png"  align="left"
 width="200"
