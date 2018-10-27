@@ -1,14 +1,14 @@
-# Notifications for Spotify
+# Spotify Release
 
  <img src="https://user-images.githubusercontent.com/16801528/38161679-26d1106e-34d4-11e8-817d-71121e8e922a.png"  align="left"
 width="200"
     >
 
-[![Build Status](https://travis-ci.org/maracuja-juice/notifications-for-spotify.svg?branch=master)](https://travis-ci.org/maracuja-juice/notifications-for-spotify)
-[![Releases](https://img.shields.io/badge/release-v1.1.1-blue.svg)](https://github.com/maracuja-juice/notifications-for-spotify/releases/latest)
+[![Build Status](https://travis-ci.org/maracuja-juice/spotify-releases-app.svg?branch=master)](https://travis-ci.org/maracuja-juice/spotify-releases-app)
+[![Releases](https://img.shields.io/badge/release-v1.1.1-blue.svg)](https://github.com/maracuja-juice/spotify-releases-app/releases/latest)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/71c07fd378814700bf4321f12d9eb390)](https://app.codacy.com/app/mpanchaud/notifications-for-spotify?utm_source=github.com&utm_medium=referral&utm_content=maracuja-juice/notifications-for-spotify&utm_campaign=badger)
-[![Known Vulnerabilities](https://snyk.io/test/github/maracuja-juice/notifications-for-spotify/badge.svg?targetFile=app%2Fbuild.gradle)](https://snyk.io/test/github/maracuja-juice/notifications-for-spotify?targetFile=app%2Fbuild.gradle)
-[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/maracuja-juice/notifications-for-spotify/issues)
+[![Known Vulnerabilities](https://snyk.io/test/github/maracuja-juice/spotify-releases-app/badge.svg?targetFile=app%2Fbuild.gradle)](https://snyk.io/test/github/maracuja-juice/spotify-releases-app?targetFile=app%2Fbuild.gradle)
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/maracuja-juice/spotify-releases-app/issues)
 
 Ever thought that you want to see which new albums of your favourite artists got released? Now you can!
 
