@@ -27,18 +27,15 @@ The List displays:
    - release date
    - album art
 - It only downloads new albums everyday or when you explicitly request it. The albums get merged with the current albums saved in the database
+- When clicking on an item in the list it will open the album/single directly in the Spotify app
+
 #### Screenshot
 
    <img src="https://user-images.githubusercontent.com/16801528/38161360-e11aeb9a-34cd-11e8-9345-8aa49faf0f28.png" width="250">
 
 ### Planned future improvements
-- A setting that allows the app (when setting is turned on) to notify the user when there is a new album added. (-> regularly downloading all albums, merging them with the database and send notification)
-- When clicking on an album in the list it should go to a second view. 
-    * This view should show details of the album as in the list
-    * It should also display a list of all the tracks of the album
-    * It should allow the album to be opened in Spotify
-    * (maybe) Allow the album/individual tracks to be saved/removed from the library of the user
-- Allow to filter the Album List by date
+- A setting that allows the app (when setting is turned on) to notify the user when there is a new album added. Or otherwise reminding the user that there (maybe?) were new albums released.
+- Play Spotify track directly from the app
   
 ## Specs / Open-Source libraries:
 - Minimum **SDK 15**
