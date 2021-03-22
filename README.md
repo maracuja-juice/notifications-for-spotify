@@ -4,17 +4,14 @@
 width="200"
     >
 
-[![Build Status](https://travis-ci.org/maracuja-juice/spotify-releases-app.svg?branch=master)](https://travis-ci.org/maracuja-juice/spotify-releases-app)
-[![Releases](https://img.shields.io/badge/release-v1.1.1-blue.svg)](https://github.com/maracuja-juice/spotify-releases-app/releases/latest)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/71c07fd378814700bf4321f12d9eb390)](https://app.codacy.com/app/mpanchaud/notifications-for-spotify?utm_source=github.com&utm_medium=referral&utm_content=maracuja-juice/notifications-for-spotify&utm_campaign=badger)
-[![Known Vulnerabilities](https://snyk.io/test/github/maracuja-juice/spotify-releases-app/badge.svg?targetFile=app%2Fbuild.gradle)](https://snyk.io/test/github/maracuja-juice/spotify-releases-app?targetFile=app%2Fbuild.gradle)
-[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/maracuja-juice/spotify-releases-app/issues)
+[![Build Status](https://travis-ci.org/panmau/spotify-releases-app.svg?branch=master)](https://travis-ci.org/panmau/spotify-releases-app)
+[![Releases](https://img.shields.io/badge/release-v1.1.1-blue.svg)](https://github.com/panmau/spotify-releases-app/releases/latest)
 
 Ever thought that you want to see which new albums of your favourite artists got released? Now you can!
 
 [<img src="https://user-images.githubusercontent.com/16801528/38161462-4e1f19b8-34cf-11e8-8082-49cf95d17be9.png"
       alt="Direct apk download"
-      height="80">](https://github.com/maracuja-juice/notifications-for-spotify/releases/latest)
+      height="80">](https://github.com/panmau/notifications-for-spotify/releases/latest)
 
 ---
 
