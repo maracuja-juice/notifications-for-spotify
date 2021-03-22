@@ -5,13 +5,13 @@ width="200"
     >
 
 [![Build Status](https://travis-ci.org/panmau/spotify-releases-app.svg?branch=master)](https://travis-ci.org/panmau/spotify-releases-app)
-[![Releases](https://img.shields.io/badge/release-v1.1.1-blue.svg)](https://github.com/panmau/spotify-releases-app/releases/latest)
+[![Releases](https://img.shields.io/badge/release-v1.2.0-blue.svg)](https://github.com/panmau/spotify-releases-app/releases)
 
 Ever thought that you want to see which new albums of your favourite artists got released? Now you can!
 
 [<img src="https://user-images.githubusercontent.com/16801528/38161462-4e1f19b8-34cf-11e8-8082-49cf95d17be9.png"
       alt="Direct apk download"
-      height="80">](https://github.com/panmau/notifications-for-spotify/releases/latest)
+      height="80">](https://github.com/panmau/spotify-releases-app/releases)
 
 ---
 
